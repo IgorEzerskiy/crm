@@ -1,0 +1,12 @@
+{% extends 'index.html' %}
+{% block content %}
+<div class="container-lg">
+<div class="container-sm" style="margin-top: 10px; width: 500px; color: white">
+    <form method="post" enctype="multipart/form-data" class="row g-2">
+        {% csrf_token %}
+        {{ form }}
+        <input type="submit" value="Save" class="btn btn-outline-success" style="width: 150px;">
+    </form>
+</div>
+</div>
+{% endblock %}

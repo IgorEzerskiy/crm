@@ -1,0 +1,31 @@
+{% extends 'index.html' %}
+{% block content %}
+    <div style="display: flex;
+  justify-content: center" class="mb-1">
+        <h3>Clients</h3>
+    </div>
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Full name</th>
+            <th scope="col">Telephone</th>
+            <th scope="col">Email</th>
+            <th scope="col">Telegram</th>
+            <th scope="col">Service company</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for client in object_list %}
+            <tr>
+                <th scope="row">{{ forloop.counter }}</th>
+                <td>{{ client.first_name }} {{ client.last_name }}</td>
+                <td>{{ client.telephone }}</td>
+                <td>{{ client.email }}</td>
+                <td>{{ client.telegram }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}

@@ -1,7 +1,7 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from phone_field import PhoneField
-
+from phonenumber_field.modelfields import PhoneNumberField
 
 class Company(models.Model):
     name = models.CharField(max_length=100, null=True, blank=True, unique=True)
@@ -16,7 +16,7 @@ class Client(models.Model):
     first_name = models.CharField(max_length=35)
     last_name = models.CharField(max_length=45)
     client_company_name = models.CharField(max_length=100)
-    telephone = PhoneField(null=False, blank=False, unique=True)
+    telephone = PhoneNumberField(null=False, blank=False, unique=True)
     email = models.EmailField(null=False, blank=False, unique=True)
     telegram = models.CharField(max_length=60)
     slack = models.CharField(max_length=60)
