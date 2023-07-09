@@ -14,7 +14,7 @@ class Client(models.Model):
 
     def __str__(self):
         return self.first_name + '_' + self.last_name + '_' + self.client_company_name
-# kakashka
+
 
 class Status(models.Model):
     name = models.CharField(max_length=30)
