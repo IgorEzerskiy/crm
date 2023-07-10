@@ -1,6 +1,6 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView, LogoutView
-from django.shortcuts import render
+from django.http import HttpResponseRedirect
 from django.views.generic import ListView, CreateView, UpdateView
 
 from crm_app.forms import UserLoginForm, UserCreateForm, ClientCreateForm, CompanyForm
@@ -37,6 +37,9 @@ class UserCreateView(CreateView):
     form_class = UserCreateForm
     success_url = 'login/'
 
+    def form_valid(self, form):
+        return HttpResponseRedirect(self.success_url)
+
 
 class ClientListView(ListView):
     template_name = 'clients.html'
@@ -48,12 +51,25 @@ class ClientCreateView(CreateView):
     form_class = ClientCreateForm
     success_url = '/'
 
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs.update({"request": self.request})
+        return kwargs
+
+    def form_valid(self, form):
+        return HttpResponseRedirect(self.success_url)
+
 
 class ClientUpdateView(UpdateView):
     form_class = ClientCreateForm
     queryset = Client.objects.all()
     template_name = 'edit_client.html'
     success_url = '/clients'
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs.update({"request": self.request})
+        return kwargs
 
 
 class CompanyUpdateView(UpdateView):

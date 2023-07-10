@@ -17,9 +17,9 @@ class Client(models.Model):
     last_name = models.CharField(max_length=45)
     # client_company_name = models.CharField(max_length=100)
     telephone = PhoneNumberField(null=False, blank=False, unique=True)
-    email = models.EmailField(null=False, blank=False, unique=True)
-    telegram = models.CharField(max_length=60)
-    slack = models.CharField(max_length=60)
+    email = models.EmailField(null=True, blank=True, unique=True)
+    telegram = models.CharField(max_length=60, null=True, blank=True)
+    slack = models.CharField(max_length=60, null=True, blank=True)
     service_company = models.ForeignKey(Company, on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
