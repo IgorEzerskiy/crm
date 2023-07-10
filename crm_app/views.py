@@ -35,9 +35,20 @@ class UserCreateView(CreateView):
     template_name = 'registration.html'
     form_class = UserCreateForm
     success_url = '/login'
+<<<<<<< HEAD
 
 
 
+=======
+
+    def form_valid(self, form):
+        user = form.save(commit=False)
+        company = Company.objects.get(name=self.request.POST.get('company'))
+        user.company = company
+        user.save()
+        #return HttpResponseRedirect(self.success_url)
+        return super().form_valid(form=form)
+>>>>>>> 9c7bf2823c0bb4e6e92134f8815b99138b3f9aaa
 
 class ClientListView(ListView):
     template_name = 'clients.html'

@@ -28,24 +28,26 @@ class UserCreateForm(UserCreationForm):
         if Company.objects.filter(name=company).exists():
             self.company_status = True
         return company
-
+"""
     def save(self, commit=True):
         if self.company_status:
             company = Company.objects.get(name=self.cleaned_data.get('company'))
             User.objects.create_user(
                 username=self.cleaned_data.get('username'),
                 password=self.cleaned_data.get('password'),
-                company=company
+                company=company,
+                #is_active=False
             )
         else:
             with transaction.atomic():
                 Company.objects.create(name=self.cleaned_data.get('company'))
-                User.objects.create_superuser(
+                User.objects.create_user(
                     username=self.cleaned_data.get('username'),
                     password=self.cleaned_data.get('password'),
-                    company=Company.objects.get(name=self.cleaned_data.get('company'))
+                    company=Company.objects.get(name=self.cleaned_data.get('company')),
+                    #is_company_admin=True
                 )
-
+"""
 
 class UserLoginForm(AuthenticationForm):
 

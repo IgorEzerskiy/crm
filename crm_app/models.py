@@ -3,10 +3,11 @@ from django.db import models
 from phone_field import PhoneField
 from phonenumber_field.modelfields import PhoneNumberField
 
+
 class Company(models.Model):
     name = models.CharField(max_length=100, null=True, blank=True, unique=True)
-    telephone = PhoneNumberField(null=False, blank=False, unique=True)
-    email = models.EmailField(null=False, blank=False, unique=True)
+    telephone = PhoneNumberField(null=False, blank=False)
+    email = models.EmailField(null=False, blank=False)
 
     def __str__(self):
         return self.name
@@ -35,6 +36,7 @@ class Status(models.Model):
 
 class User(AbstractUser):
     company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name='user')
+    is_company_admin = models.BooleanField(default=False)
 
     def __str__(self):
         return self.username
