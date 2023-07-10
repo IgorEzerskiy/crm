@@ -3,8 +3,8 @@ from django.contrib.auth.views import LoginView, LogoutView
 from django.shortcuts import render
 from django.views.generic import ListView, CreateView, UpdateView
 
-from crm_app.forms import UserLoginForm, UserCreateForm, ClientCreateForm
-from crm_app.models import Order, Client
+from crm_app.forms import UserLoginForm, UserCreateForm, ClientCreateForm, CompanyForm
+from crm_app.models import Order, Client, Company
 
 
 # Create your views here.
@@ -54,6 +54,13 @@ class ClientUpdateView(UpdateView):
     queryset = Client.objects.all()
     template_name = 'edit_client.html'
     success_url = '/clients'
+
+
+class CompanyUpdateView(UpdateView):
+    form_class = CompanyForm
+    queryset = Company.objects.all()
+    template_name = 'edit_company.html'
+    success_url = '/'
 
 
 class OrderCreateView(CreateView):

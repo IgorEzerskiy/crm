@@ -5,7 +5,7 @@ from phonenumber_field.modelfields import PhoneNumberField
 
 class Company(models.Model):
     name = models.CharField(max_length=100, null=True, blank=True, unique=True)
-    telephone = PhoneField(null=False, blank=False, unique=True)
+    telephone = PhoneNumberField(null=False, blank=False, unique=True)
     email = models.EmailField(null=False, blank=False, unique=True)
 
     def __str__(self):

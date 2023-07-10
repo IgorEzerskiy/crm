@@ -73,3 +73,20 @@ class ClientCreateForm(ModelForm):
         self.fields['telegram'].widget.attrs.update({'class': 'form-control'})
         self.fields['slack'].widget.attrs.update({'class': 'form-control'})
         self.fields['service_company'].widget.attrs.update({'class': 'form-control'})
+
+
+class CompanyForm(ModelForm):
+    class Meta:
+        model = Company
+        fields = ('name', 'telephone', 'email')
+        widgets = {
+            'telephone': PhoneNumberPrefixWidget(country_attrs={
+                'style': 'width:100px',
+            }),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super(CompanyForm, self).__init__(*args, **kwargs)
+        self.fields['name'].widget.attrs.update({'class': 'form-control'})
+        self.fields['telephone'].widget.attrs.update({'class': 'form-control'})
+        self.fields['email'].widget.attrs.update({'class': 'form-control'})
