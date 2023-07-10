@@ -3,6 +3,7 @@ from django.forms import CharField, ModelForm, forms
 from django.db import transaction
 from crm_app.models import User, Company, Client
 from phonenumber_field.widgets import PhoneNumberPrefixWidget
+import re
 
 
 class UserCreateForm(UserCreationForm):
@@ -121,3 +122,11 @@ class CompanyForm(ModelForm):
         self.fields['name'].widget.attrs.update({'class': 'form-control'})
         self.fields['telephone'].widget.attrs.update({'class': 'form-control'})
         self.fields['email'].widget.attrs.update({'class': 'form-control'})
+
+    def clean_name(self):
+        name = self.cleaned_data.get('name')
+        if name is not None and re.match(r'^\d+$', name):
+            raise forms.ValidationError('It can`t be only digits')
+        elif name is None:
+            raise forms.ValidationError('You have to name your company')
+        return name
