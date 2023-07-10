@@ -8,7 +8,7 @@
           integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
 </head>
 <body style="background-color: #343a40">
-<nav class="navbar navbar-expand-lg  navbar-dark bg-dark">
+<nav class="navbar fixed-top navbar-expand-lg  navbar-dark bg-dark">
     <div class="container-fluid">
         <a class="navbar-brand" href="{% url 'main' %}">CRM</a>
         {% if request.user.is_authenticated %}
@@ -55,7 +55,7 @@
         </div>
     </div>
 </nav>
-<main style="padding-left: 30px; padding-right: 30px; margin-top: 50px; margin-bottom: 30px">
+<main style="padding-left: 30px; padding-right: 30px; margin-top: 100px; margin-bottom: 100px; overflow: hidden;">
     {% block content %}
     {% endblock %}
 </main>
