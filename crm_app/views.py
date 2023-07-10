@@ -3,7 +3,7 @@ from django.contrib.auth.views import LoginView, LogoutView
 from django.http import HttpResponseRedirect
 from django.views.generic import ListView, CreateView, UpdateView
 
-from crm_app.forms import UserLoginForm, UserCreateForm, ClientCreateForm, CompanyForm
+from crm_app.forms import UserLoginForm, UserCreateForm, ClientModelForm, CompanyForm
 from crm_app.models import Order, Client, Company
 
 
@@ -48,7 +48,7 @@ class ClientListView(ListView):
 
 class ClientCreateView(CreateView):
     template_name = 'new_client.html'
-    form_class = ClientCreateForm
+    form_class = ClientModelForm
     success_url = '/'
 
     def get_form_kwargs(self):
@@ -61,7 +61,7 @@ class ClientCreateView(CreateView):
 
 
 class ClientUpdateView(UpdateView):
-    form_class = ClientCreateForm
+    form_class = ClientModelForm
     queryset = Client.objects.all()
     template_name = 'edit_client.html'
     success_url = '/clients'

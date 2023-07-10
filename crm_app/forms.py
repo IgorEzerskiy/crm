@@ -54,7 +54,7 @@ class UserLoginForm(AuthenticationForm):
         self.fields['password'].widget.attrs.update({'class': 'form-control'})
 
 
-class ClientCreateForm(ModelForm):
+class ClientModelForm(ModelForm):
     class Meta:
         model = Client
         fields = ['first_name', 'last_name', 'telephone', 'email', 'telegram', 'slack', ]
@@ -67,7 +67,7 @@ class ClientCreateForm(ModelForm):
     def __init__(self, *args, **kwargs):
         if 'request' in kwargs:
             self.request = kwargs.pop('request')
-        super(ClientCreateForm, self).__init__(*args, **kwargs)
+        super(ClientModelForm, self).__init__(*args, **kwargs)
         self.fields['first_name'].widget.attrs.update({'class': 'form-control'})
         self.fields['last_name'].widget.attrs.update({'class': 'form-control'})
         self.fields['telephone'].widget.attrs.update({'class': 'form-control'})
