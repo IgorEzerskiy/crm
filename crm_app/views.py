@@ -1,7 +1,7 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView, LogoutView
 from django.http import HttpResponseRedirect
-from django.views.generic import ListView, CreateView, UpdateView
+from django.views.generic import ListView, CreateView, UpdateView, DetailView
 
 from crm_app.forms import UserLoginForm, UserCreateForm, ClientModelForm, CompanyForm
 from crm_app.models import Order, Client, Company, User
@@ -22,7 +22,6 @@ class OrderListView(LoginRequiredMixin, ListView):
 class UserLoginView(LoginView):
     # API Done
     template_name = 'login.html'
-    form_class = UserLoginForm
     next_page = '/'
 
 
@@ -35,10 +34,9 @@ class UserCreateView(CreateView):
     # API Done
     template_name = 'registration.html'
     form_class = UserCreateForm
-    success_url = 'login/'
+    success_url = '/login'
 
-    def form_valid(self, form):
-        return HttpResponseRedirect(self.success_url)
+
 
 
 class ClientListView(ListView):
@@ -92,6 +90,10 @@ class CompanyUpdateView(UpdateView):
     queryset = Company.objects.all()
     template_name = 'edit_company.html'
     success_url = '/'
+
+class UserDetailView(DetailView):
+    queryset = User.objects.all()
+    template_name = 'profile.html'
 
 
 class OrderCreateView(CreateView):

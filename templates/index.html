@@ -42,7 +42,7 @@
                     </ul>
                 </li>
             </ul>
-            <a class="navbar-brand" href="{% url 'main' %}">Profile: {{ request.user }}</a>
+            <a class="navbar-brand" href="{% url 'profile' user.id %}">Profile: {{ request.user.username }}</a>
             <form class="d-flex" method="post" action={% url 'logout' %}>
                 {% csrf_token %}
                 <button class="btn btn-outline-danger" type="submit">Log out</button>
