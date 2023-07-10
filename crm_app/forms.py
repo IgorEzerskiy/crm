@@ -76,8 +76,6 @@ class ClientModelForm(ModelForm):
         self.fields['slack'].widget.attrs.update({'class': 'form-control'})
         # self.fields['service_company'].widget.attrs.update({'class': 'form-control'})
 
-
-
     def clean_first_name(self):
         first_name = self.cleaned_data.get('first_name')
         if not first_name.isalpha():
@@ -106,7 +104,6 @@ class ClientModelForm(ModelForm):
             email=self.cleaned_data.get('email'),
             service_company=self.request.user.company
         )
-
 
 
 class CompanyForm(ModelForm):

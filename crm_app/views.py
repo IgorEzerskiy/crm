@@ -16,6 +16,7 @@ class OrderListView(LoginRequiredMixin, ListView):
     login_url = 'login/'
 
 
+
 # Auth
 
 
@@ -44,6 +45,11 @@ class UserCreateView(CreateView):
 class ClientListView(ListView):
     template_name = 'clients.html'
     queryset = Client.objects.all()
+    paginate_by = 10
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        return queryset.filter(service_company=self.request.user.company)
 
 
 class ClientCreateView(CreateView):
