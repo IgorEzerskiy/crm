@@ -1,7 +1,7 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView, LogoutView
 from django.shortcuts import render
-from django.views.generic import ListView, CreateView
+from django.views.generic import ListView, CreateView, UpdateView
 
 from crm_app.forms import UserLoginForm, UserCreateForm, ClientCreateForm
 from crm_app.models import Order, Client
@@ -47,6 +47,13 @@ class ClientCreateView(CreateView):
     template_name = 'new_client.html'
     form_class = ClientCreateForm
     success_url = '/'
+
+
+class ClientUpdateView(UpdateView):
+    form_class = ClientCreateForm
+    queryset = Client.objects.all()
+    template_name = 'edit_client.html'
+    success_url = '/clients'
 
 
 class OrderCreateView(CreateView):

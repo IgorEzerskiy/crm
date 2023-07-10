@@ -13,6 +13,7 @@
             <th scope="col">Email</th>
             <th scope="col">Telegram</th>
             <th scope="col">Service company</th>
+            <th scope="col"></th>
         </tr>
         </thead>
         <tbody>
@@ -23,6 +24,12 @@
                 <td>{{ client.telephone }}</td>
                 <td>{{ client.email }}</td>
                 <td>{{ client.telegram }}</td>
+                <td>{{ client.service_company.name }}</td>
+                <td>
+                    <a class="btn btn-outline-primary" style="width: 150px;"
+                       href="{% url 'edit_client' client.id %} ">Edit
+                    </a>
+                </td>
             </tr>
         {% endfor %}
         </tbody>

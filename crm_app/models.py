@@ -15,7 +15,7 @@ class Company(models.Model):
 class Client(models.Model):
     first_name = models.CharField(max_length=35)
     last_name = models.CharField(max_length=45)
-    client_company_name = models.CharField(max_length=100)
+    # client_company_name = models.CharField(max_length=100)
     telephone = PhoneNumberField(null=False, blank=False, unique=True)
     email = models.EmailField(null=False, blank=False, unique=True)
     telegram = models.CharField(max_length=60)
@@ -23,7 +23,7 @@ class Client(models.Model):
     service_company = models.ForeignKey(Company, on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
-        return self.first_name + '_' + self.last_name + '_' + self.client_company_name
+        return self.first_name + '_' + self.last_name + '_' + self.service_company.name
 
 
 class Status(models.Model):

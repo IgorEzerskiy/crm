@@ -1,6 +1,7 @@
 from django.urls import path
 
-from crm_app.views import OrderListView, UserLoginView, UserLogoutView, UserCreateView, ClientCreateView, ClientListView
+from crm_app.views import OrderListView, UserLoginView, UserLogoutView, UserCreateView, ClientCreateView, \
+    ClientListView, ClientUpdateView
 
 urlpatterns = [
     path('board/', OrderListView.as_view(), name='board'),
@@ -10,4 +11,5 @@ urlpatterns = [
     path('registration/', UserCreateView.as_view(), name='registration'),
     path('clients/', ClientListView.as_view(), name='clients'),
     path('new_client/', ClientCreateView.as_view(), name='new_client'),
+    path('edit_client/<int:pk>', ClientUpdateView.as_view(), name='edit_client'),
 ]
