@@ -4,7 +4,7 @@ from django.http import HttpResponseRedirect
 from django.views.generic import ListView, CreateView, UpdateView
 
 from crm_app.forms import UserLoginForm, UserCreateForm, ClientModelForm, CompanyForm
-from crm_app.models import Order, Client, Company
+from crm_app.models import Order, Client, Company, User
 
 
 # Create your views here.
@@ -14,7 +14,6 @@ class OrderListView(LoginRequiredMixin, ListView):
     template_name = 'board.html'
     queryset = Order.objects.all()
     login_url = 'login/'
-
 
 
 # Auth
@@ -50,6 +49,16 @@ class ClientListView(ListView):
     def get_queryset(self):
         queryset = super().get_queryset()
         return queryset.filter(service_company=self.request.user.company)
+
+
+class UserListView(ListView):
+    template_name = 'users.html'
+    queryset = User.objects.all()
+    paginate_by = 10
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        return queryset.filter(company=self.request.user.company)
 
 
 class ClientCreateView(CreateView):
