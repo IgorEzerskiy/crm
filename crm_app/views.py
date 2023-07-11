@@ -1,5 +1,6 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView, LogoutView
+from django.db import transaction
 from django.http import HttpResponseRedirect
 from django.views.generic import ListView, CreateView, UpdateView, DetailView
 
@@ -20,9 +21,9 @@ class OrderListView(LoginRequiredMixin, ListView):
 
 
 class UserLoginView(LoginView):
-    # API Done
     template_name = 'login.html'
     next_page = '/'
+    form_class = UserLoginForm
 
 
 class UserLogoutView(LoginRequiredMixin, LogoutView):
@@ -38,11 +39,25 @@ class UserCreateView(CreateView):
 
     def form_valid(self, form):
         user = form.save(commit=False)
-        company = Company.objects.get(name=self.request.POST.get('company'))
-        user.company = company
-        user.save()
-        #return HttpResponseRedirect(self.success_url)
-        return super().form_valid(form=form)
+        company = Company.objects.filter(
+            name=self.request.POST.get('company')
+        )
+        if company.exists():
+            user.company = company.first()
+            user.is_active = False
+            user.save()
+        else:
+            with transaction.atomic():
+                company = Company.objects.create(
+                    name=self.request.POST.get('company')
+                )
+                user.company = company
+                user.is_company_admin = True
+                user.save()
+        return super().form_valid(
+            form=form
+        )
+
 
 class ClientListView(ListView):
     template_name = 'clients.html'
@@ -51,7 +66,9 @@ class ClientListView(ListView):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        return queryset.filter(service_company=self.request.user.company)
+        return queryset.filter(
+            service_company=self.request.user.company
+        )
 
 
 class UserListView(ListView):
@@ -61,7 +78,9 @@ class UserListView(ListView):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        return queryset.filter(company=self.request.user.company)
+        return queryset.filter(
+            company=self.request.user.company
+        )
 
 
 class ClientCreateView(CreateView):
@@ -71,7 +90,9 @@ class ClientCreateView(CreateView):
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
-        kwargs.update({"request": self.request})
+        kwargs.update(
+            {"request": self.request}
+        )
         return kwargs
 
     def form_valid(self, form):
@@ -86,7 +107,9 @@ class ClientUpdateView(UpdateView):
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
-        kwargs.update({"request": self.request})
+        kwargs.update(
+            {"request": self.request}
+        )
         return kwargs
 
 
@@ -95,6 +118,7 @@ class CompanyUpdateView(UpdateView):
     queryset = Company.objects.all()
     template_name = 'edit_company.html'
     success_url = '/'
+
 
 class UserDetailView(DetailView):
     queryset = User.objects.all()
