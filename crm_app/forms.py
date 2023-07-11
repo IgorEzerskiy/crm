@@ -48,7 +48,7 @@ class ClientModelForm(ModelForm):
         fields = ['first_name', 'last_name', 'telephone', 'email', 'telegram', 'slack', ]
         widgets = {
             'telephone': PhoneNumberPrefixWidget(country_attrs={
-                'style': 'width:100px',
+                'style': 'width:150px; margin-bottom:15px',
             }),
         }
 
@@ -81,17 +81,6 @@ class ClientModelForm(ModelForm):
         if telegram is not None and not telegram.startswith('@'):
             raise forms.ValidationError('It should starts with "@"')
         return telegram
-
-    def save(self, commit=True):
-        self.instance = Client.objects.create(
-            first_name=self.cleaned_data.get('first_name'),
-            last_name=self.cleaned_data.get('last_name'),
-            slack=self.cleaned_data.get('slack'),
-            telephone=self.cleaned_data.get('telephone'),
-            telegram=self.cleaned_data.get('telegram'),
-            email=self.cleaned_data.get('email'),
-            service_company=self.request.user.company
-        )
 
 
 class CompanyForm(ModelForm):

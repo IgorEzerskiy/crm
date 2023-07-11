@@ -137,7 +137,11 @@ class ClientCreateView(LoginRequiredMixin, CreateView):
         return kwargs
 
     def form_valid(self, form):
-        return HttpResponseRedirect(self.success_url)
+        client = form.save(commit=False)
+        client.service_company = self.request.user.company
+        return super().form_valid(
+            form=form
+        )
 
 
 class ClientUpdateView(LoginRequiredMixin, UpdateView):
