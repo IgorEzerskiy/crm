@@ -122,6 +122,7 @@ class UserConnectionRequestsListView(AdminPassedMixin, LoginRequiredMixin, ListV
                 pass
         return HttpResponseRedirect('/users-connections-requests')
 
+
 class ClientCreateView(LoginRequiredMixin, CreateView):
     template_name = 'new_client.html'
     form_class = ClientModelForm
