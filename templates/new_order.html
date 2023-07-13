@@ -1,13 +1,13 @@
 {% extends 'index.html' %}
 {% block content %}
     <div class="container-lg">
-        <h4 class="text-center">Company editing...</h4>
-        <div class="container-sm" style="margin-top: 10px; width: 500px; color: white">
+        <h4 class="text-center">New order</h4>
+        <div class="container-sm" style="margin-top: 10px; width: 1300px; color: white">
             <form method="post" enctype="multipart/form-data" class="row g-2">
                 {% csrf_token %}
                 <div class="container">
                     <div class="row">
-                        {% for field in form %}
+                        {% for field in new_order %}
                             <div class="col-xxl-6" style="margin-top: 15px;">
                                 <b>{{ field.label_tag }}</b> - {{ field }} {{ field.errors }}
                             </div>
@@ -15,7 +15,10 @@
                     </div>
                     <input type="submit" value="Save" class="btn btn-outline-success"
                            style="width: 150px; margin-top: 15px;">
+                </div>
             </form>
         </div>
     </div>
+
+
 {% endblock %}

@@ -1,8 +1,13 @@
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from django.forms import CharField, ModelForm, forms
-from crm_app.models import User, Company, Client
+from django.forms import CharField, ModelForm, forms, DateField, SelectDateWidget, \
+    DateInput  # WHY form was imported????
+from crm_app.models import User, Company, Client, Order
 from phonenumber_field.widgets import PhoneNumberPrefixWidget
 import re
+
+
+class CustomDateInput(DateInput):
+    input_type = 'date'
 
 
 class UserCreateForm(UserCreationForm):
@@ -10,7 +15,7 @@ class UserCreateForm(UserCreationForm):
 
     class Meta:
         model = User
-        fields = ['username']
+        fields = ('username', )
 
     def __init__(self, *args, **kwargs):
         super(UserCreateForm, self).__init__(*args, **kwargs)
@@ -45,7 +50,13 @@ class UserLoginForm(AuthenticationForm):
 class ClientModelForm(ModelForm):
     class Meta:
         model = Client
-        fields = ['first_name', 'last_name', 'telephone', 'email', 'telegram', 'slack', ]
+        fields = ('first_name',
+                  'last_name',
+                  'telephone',
+                  'email',
+                  'telegram',
+                  'slack',
+                  )
         widgets = {
             'telephone': PhoneNumberPrefixWidget(country_attrs={
                 'style': 'width:150px; margin-bottom:15px',
@@ -83,18 +94,21 @@ class ClientModelForm(ModelForm):
         return telegram
 
 
-class CompanyForm(ModelForm):
+class CompanyUpdateForm(ModelForm):
     class Meta:
         model = Company
-        fields = ('name', 'telephone', 'email')
+        fields = ('name',
+                  'telephone',
+                  'email',
+                  )
         widgets = {
             'telephone': PhoneNumberPrefixWidget(country_attrs={
-                'style': 'width:100px',
+                'style': 'width:150px, margin-left:15px',
             }),
         }
 
     def __init__(self, *args, **kwargs):
-        super(CompanyForm, self).__init__(*args, **kwargs)
+        super(CompanyUpdateForm, self).__init__(*args, **kwargs)
         self.fields['name'].widget.attrs.update({'class': 'form-control'})
         self.fields['telephone'].widget.attrs.update({'class': 'form-control'})
         self.fields['email'].widget.attrs.update({'class': 'form-control'})
@@ -106,3 +120,29 @@ class CompanyForm(ModelForm):
         elif name is None:
             raise forms.ValidationError('You have to name your company')
         return name
+
+
+class OrderCreateForm(ModelForm):
+    start_date = DateField(widget=CustomDateInput())
+    due_date = DateField(widget=CustomDateInput())
+
+    class Meta:
+        model = Order
+        fields = ('title',
+                  'description',
+                  'client',
+                  'manager',
+                  'start_date',
+                  'due_date',
+                  'payment_amount',
+                  )
+
+    def __init__(self, *args, **kwargs):
+        super(OrderCreateForm, self).__init__(*args, **kwargs)
+        self.fields['title'].widget.attrs.update({'class': 'form-control'})
+        self.fields['description'].widget.attrs.update({'class': 'form-control'})
+        self.fields['client'].widget.attrs.update({'class': 'form-control'})
+        self.fields['manager'].widget.attrs.update({'class': 'form-control'})
+        self.fields['start_date'].widget.attrs.update({'class': 'form-control'})
+        self.fields['due_date'].widget.attrs.update({'class': 'form-control'})
+        self.fields['payment_amount'].widget.attrs.update({'class': 'form-control', 'min': 0})
