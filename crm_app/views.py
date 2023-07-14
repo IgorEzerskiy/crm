@@ -19,6 +19,11 @@ class OrderListView(LoginRequiredMixin, ListView):
     queryset = Order.objects.all()
     login_url = 'login/'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['statuses'] = Status.objects.all()
+        context['orders'] = Order.objects.all()
+        return context
 
 # Auth
 

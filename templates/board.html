@@ -3,86 +3,33 @@
 {% block content %}
     <div class="container text-center">
         <div class="row">
-            <div class="col"
-                 style="margin-right: 10px; margin-left: 10px; display: flex; flex-direction: column; align-items: center; border: 1px solid; border-radius: 15px; width: 16rem; ">
-                <h3>Pre-sale</h3>
-                <!--order-->
-                <div class="card" style="width: 17rem;">
-                    <div class="card-body">
-                        <h5 class="card-title">Card title</h5>
-                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of
-                            the card's content.</p>
-                    </div>
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item">Client: </li>
-                        <li class="list-group-item">Tel: </li>
-                        <li class="list-group-item">Start date: </li>
-                        <li class="list-group-item">Due date: </li>
-                        <li class="list-group-item">Payment amount: </li>
-                    </ul>
-                    <div class="card-body">
-                        <a href="#" class="card-link">Update order</a>
-                        <a href="#" class="card-link">More info</a>
-                    </div>
+            {% for status in statuses %}
+                <div class="col"
+                     style="margin-right: 10px; margin-left: 10px; display: flex; flex-direction: column; align-items: center; border: 1px solid; border-radius: 15px; width: 16rem; ">
+                    <h3>{{ status.name }}</h3>
+                    <!--order-->
+                    {% for order in orders %}
+                        {% if status.name == order.status.name %}
+                            <div class="card" style="width: 17rem; margin-bottom: 15px;">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ order.title }}</h5>
+                                </div>
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item">Client: {{ order.client.first_name }} {{ order.client.last_name }}</li>
+                                    <li class="list-group-item">Tel: {{ order.client.telephone }}</li>
+                                    <li class="list-group-item">Start date: {{ order.start_date }}</li>
+                                    <li class="list-group-item">Due date: {{ order.due_date }}</li>
+                                    <li class="list-group-item">Payment amount: {{ order.payment_amount }}</li>
+                                </ul>
+                                <div class="card-body">
+                                    <a href="#" class="card-link">Update order</a>
+                                    <a href="#" class="card-link">More info</a>
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
                 </div>
-                <div class="card" style="width: 17rem;">
-                    <div class="card-body">
-                        <h5 class="card-title">Card title</h5>
-                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of
-                            the card's content.</p>
-                    </div>
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item">Client: </li>
-                        <li class="list-group-item">Tel: </li>
-                        <li class="list-group-item">Start date: </li>
-                        <li class="list-group-item">Due date: </li>
-                        <li class="list-group-item">Payment amount: </li>
-                    </ul>
-                    <div class="card-body">
-                        <a href="#" class="card-link">Update order</a>
-                        <a href="#" class="card-link">More info</a>
-                    </div>
-                </div>
-                <div class="card" style="width: 17rem;">
-                    <div class="card-body">
-                        <h5 class="card-title">Card title</h5>
-                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of
-                            the card's content.</p>
-                    </div>
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item">Client: </li>
-                        <li class="list-group-item">Tel: </li>
-                        <li class="list-group-item">Start date: </li>
-                        <li class="list-group-item">Due date: </li>
-                        <li class="list-group-item">Payment amount: </li>
-                    </ul>
-                    <div class="card-body">
-                        <a href="#" class="card-link">Update order</a>
-                        <a href="#" class="card-link">More info</a>
-                    </div>
-                </div>
-
-            </div>
-
-            <div class="col"
-                 style="margin-right: 10px; margin-left: 10px; display: flex; flex-direction: column; align-items: center; border: 1px solid; border-radius: 15px; width: 16rem; ">
-                <h3>In work</h3>
-                <!--order-->
-
-            </div>
-            <div class="col"
-                 style="margin-right: 10px; margin-left: 10px; display: flex; flex-direction: column; align-items: center; border: 1px solid; border-radius: 15px; width: 16rem; ">
-                <h3>In review</h3>
-                <!--order-->
-
-            </div>
-            <div class="col"
-                 style="margin-right: 10px; margin-left: 10px; display: flex; flex-direction: column; align-items: center; border: 1px solid; border-radius: 15px; width: 16rem; ">
-                <h3>Closed</h3>
-                <!--order-->
-
-            </div>
-
+            {% endfor %}
         </div>
     </div>
 {% endblock %}
