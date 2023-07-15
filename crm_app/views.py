@@ -5,7 +5,7 @@ from django.http import HttpResponseRedirect
 from django.views.generic import ListView, CreateView, UpdateView, DetailView
 from django.forms import ModelChoiceField
 from crm_app.forms import UserLoginForm, UserCreateForm, ClientModelForm, CompanyUpdateForm, OrderCreateForm
-from crm_app.models import Order, Client, Company, User, Status
+from crm_app.models import Order, Client, Company, User, Status, Comment
 
 
 # Create your views here.
@@ -22,7 +22,12 @@ class OrderListView(LoginRequiredMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['statuses'] = Status.objects.all()
-        context['orders'] = Order.objects.all()
+        context['orders'] = Order.objects.filter(
+            client__service_company=self.request.user.company
+        )
+        context['comments'] = Comment.objects.filter(
+            author__company=self.request.user.company
+        )
         return context
 
 # Auth
@@ -210,3 +215,24 @@ class OrderCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(
             form=form
         )
+
+
+class CommentCreateView(LoginRequiredMixin, CreateView):
+    success_url = '/'
+    login_url = '/login'
+
+    def post(self, request, *args, **kwargs):
+        comment_text = self.request.POST.get('comment_text')
+        comment_order = self.request.POST.get('comment_order')
+
+        try:
+            order = Order.objects.get(id=comment_order)
+            if comment_text and comment_order and len(comment_text) < 450:
+                Comment.objects.create(
+                    text=comment_text,
+                    order=order,
+                    author=self.request.user)
+        except Order.DoesNotExist:
+            # TODO: Add message
+            pass
+        return HttpResponseRedirect(self.success_url)

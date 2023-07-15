@@ -57,8 +57,8 @@ class Comment(models.Model):
     created_at = models.DateField(auto_now=True)
     updated_at = models.DateTimeField(auto_now_add=True)
     text = models.CharField(max_length=450)
-    order = models.ForeignKey(Order, on_delete=models.CASCADE)
-    author = models.ForeignKey(User, on_delete=models.DO_NOTHING)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='comments')
+    author = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name='comments')
 
     def __str__(self):
         return f'Comment for order: {self.order.title[0:15]} by author {self.author.first_name}_{self.author.last_name}'
