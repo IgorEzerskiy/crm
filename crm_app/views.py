@@ -28,7 +28,9 @@ class OrderListView(LoginRequiredMixin, ListView):
         context['comments'] = Comment.objects.filter(
             author__company=self.request.user.company
         )
+
         return context
+
 
 # Auth
 
@@ -67,6 +69,7 @@ class UserCreateView(CreateView):
                 user.company = company
                 user.is_company_admin = True
                 user.save()
+
         return super().form_valid(
             form=form
         )
@@ -80,6 +83,7 @@ class ClientListView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         queryset = super().get_queryset()
+
         return queryset.filter(
             service_company=self.request.user.company
         )
@@ -93,6 +97,7 @@ class UserListView(AdminPassedMixin, LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         queryset = super().get_queryset()
+
         return queryset.filter(
             company=self.request.user.company
         )
@@ -106,6 +111,7 @@ class UserConnectionRequestsListView(AdminPassedMixin, LoginRequiredMixin, ListV
 
     def get_queryset(self):
         queryset = super().get_queryset()
+
         return queryset.filter(
             company=self.request.user.company, is_active=False
         )
@@ -130,6 +136,7 @@ class UserConnectionRequestsListView(AdminPassedMixin, LoginRequiredMixin, ListV
             except User.DoesNotExist:
                 # TODO: Add message
                 pass
+
         return HttpResponseRedirect('/users-connections-requests')
 
 
@@ -144,11 +151,13 @@ class ClientCreateView(LoginRequiredMixin, CreateView):
         kwargs.update(
             {"request": self.request}
         )
+
         return kwargs
 
     def form_valid(self, form):
         client = form.save(commit=False)
         client.service_company = self.request.user.company
+
         return super().form_valid(
             form=form
         )
@@ -166,6 +175,7 @@ class ClientUpdateView(LoginRequiredMixin, UpdateView):
         kwargs.update(
             {"request": self.request}
         )
+
         return kwargs
 
 
@@ -190,21 +200,21 @@ class OrderCreateView(LoginRequiredMixin, CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        if not self.request.user.is_staff:
-            order_form = OrderCreateForm()
+        order_form = context['form']
 
-            clients = Client.objects.filter(
-                service_company=self.request.user.company
-            )
-            managers = User.objects.filter(
-                company=self.request.user.company
-            )
+        clients = Client.objects.filter(
+            service_company=self.request.user.company
+        )
+        managers = User.objects.filter(
+            company=self.request.user.company
+        )
 
-            order_form.fields['client'] = ModelChoiceField(queryset=clients)
-            order_form.fields['client'].widget.attrs.update({'class': 'form-control'})
-            order_form.fields['manager'] = ModelChoiceField(queryset=managers)
-            order_form.fields['manager'].widget.attrs.update({'class': 'form-control'})
-            context['new_order'] = order_form
+        order_form.fields['client'] = ModelChoiceField(queryset=clients)
+        order_form.fields['client'].widget.attrs.update({'class': 'form-control'})
+        order_form.fields['manager'] = ModelChoiceField(queryset=managers)
+        order_form.fields['manager'].widget.attrs.update({'class': 'form-control'})
+        context['new_order'] = order_form
+
         return context
 
     def form_valid(self, form):
@@ -212,6 +222,7 @@ class OrderCreateView(LoginRequiredMixin, CreateView):
         status = Status.objects.first()
         order.status = status
         order.save()
+
         return super().form_valid(
             form=form
         )
@@ -227,12 +238,19 @@ class CommentCreateView(LoginRequiredMixin, CreateView):
 
         try:
             order = Order.objects.get(id=comment_order)
-            if comment_text and comment_order and len(comment_text) < 450:
+            if len(comment_text) < 450:
+                # TODO: Add message
+                pass
+            if comment_text and comment_order:
                 Comment.objects.create(
                     text=comment_text,
                     order=order,
                     author=self.request.user)
+            else:
+                # TODO: Add message
+                pass
         except Order.DoesNotExist:
             # TODO: Add message
             pass
+
         return HttpResponseRedirect(self.success_url)

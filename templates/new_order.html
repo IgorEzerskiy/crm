@@ -7,9 +7,12 @@
                 {% csrf_token %}
                 <div class="container">
                     <div class="row">
+                        {{ new_order.non_field_errors }}
                         {% for field in new_order %}
                             <div class="col-xxl-6" style="margin-top: 15px;">
-                                <b>{{ field.label_tag }}</b> - {{ field }} {{ field.errors }}
+                                <b>{{ field.label_tag }}</b>
+                                {{ field }}
+                                {{ field.errors }}
                             </div>
                         {% endfor %}
                     </div>

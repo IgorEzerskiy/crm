@@ -44,6 +44,7 @@ class UserLoginForm(AuthenticationForm):
             raise forms.ValidationError(
                 'Invalid username.'
             )
+
         return username
 
 
@@ -79,18 +80,21 @@ class ClientModelForm(ModelForm):
         first_name = self.cleaned_data.get('first_name')
         if not first_name.isalpha():
             raise forms.ValidationError('Only letter')
+
         return first_name
 
     def clean_last_name(self):
         last_name = self.cleaned_data.get('last_name')
         if not last_name.isalpha():
             raise forms.ValidationError('Only letter')
+
         return last_name
 
     def clean_telegram(self):
         telegram = self.cleaned_data.get('telegram')
         if telegram is not None and not telegram.startswith('@'):
             raise forms.ValidationError('It should starts with "@"')
+
         return telegram
 
 
@@ -119,6 +123,7 @@ class CompanyUpdateForm(ModelForm):
             raise forms.ValidationError('It can`t be only digits')
         elif name is None:
             raise forms.ValidationError('You have to name your company')
+
         return name
 
 
@@ -146,3 +151,22 @@ class OrderCreateForm(ModelForm):
         self.fields['start_date'].widget.attrs.update({'class': 'form-control'})
         self.fields['due_date'].widget.attrs.update({'class': 'form-control'})
         self.fields['payment_amount'].widget.attrs.update({'class': 'form-control', 'min': 0})
+
+    def clean_payment_amount(self):
+        payment_amount = self.cleaned_data.get('payment_amount')
+        if payment_amount < 0:
+            raise forms.ValidationError('Payment amount field must have value more then 0.')
+
+        return payment_amount
+
+    def clean(self):
+        cleaned_data = super().clean()
+        start_date = cleaned_data.get('start_date')
+        due_date = cleaned_data.get('due_date')
+
+        if start_date and due_date:
+            if start_date > due_date:
+                self.add_error('start_date', 'Start date should be earlier than due date.')
+                self.add_error('due_date', 'Due date should be later than start date.')
+
+        return cleaned_data
