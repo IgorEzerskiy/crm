@@ -49,7 +49,7 @@ class Order(models.Model):
     manager = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name='order')
     start_date = models.DateField()
     due_date = models.DateField()
-    payment_amount = models.DecimalField(max_digits=6, decimal_places=2)
+    payment_amount = models.DecimalField(max_digits=15, decimal_places=2)
     status = models.ForeignKey(Status, on_delete=models.DO_NOTHING)
 
 

@@ -1,5 +1,5 @@
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from django.forms import CharField, ModelForm, forms, DateField, SelectDateWidget, \
+from django.forms import CharField, ModelForm, forms, DateField, \
     DateInput  # WHY form was imported????
 from crm_app.models import User, Company, Client, Order, Comment
 from phonenumber_field.widgets import PhoneNumberPrefixWidget
@@ -11,7 +11,9 @@ class CustomDateInput(DateInput):
 
 
 class UserCreateForm(UserCreationForm):
-    company = CharField(max_length=100)
+    company = CharField(
+        max_length=100
+    )
 
     class Meta:
         model = User
@@ -34,7 +36,9 @@ class UserLoginForm(AuthenticationForm):
 
     def clean_username(self):
         username = self.cleaned_data.get('username')
-        user = User.objects.filter(username=username)
+        user = User.objects.filter(
+            username=username
+        )
         if user.exists():
             if not user.first().is_active:
                 raise forms.ValidationError(
@@ -128,8 +132,12 @@ class CompanyUpdateForm(ModelForm):
 
 
 class OrderCreateForm(ModelForm):
-    start_date = DateField(widget=CustomDateInput())
-    due_date = DateField(widget=CustomDateInput())
+    start_date = DateField(
+        widget=CustomDateInput()
+    )
+    due_date = DateField(
+        widget=CustomDateInput()
+    )
 
     class Meta:
         model = Order
@@ -170,3 +178,31 @@ class OrderCreateForm(ModelForm):
                 self.add_error('due_date', 'Due date should be later than start date.')
 
         return cleaned_data
+
+
+class OrderUpdateForm(ModelForm):
+    start_date = DateField(
+        widget=CustomDateInput()
+    )
+    due_date = DateField(
+        widget=CustomDateInput()
+    )
+
+    class Meta:
+        model = Order
+        fields = ('title',
+                  'description',
+                  'start_date',
+                  'due_date',
+                  'payment_amount',
+                  'status'
+                  )
+
+    def __init__(self, *args, **kwargs):
+        super(OrderUpdateForm, self).__init__(*args, **kwargs)
+        self.fields['title'].widget.attrs.update({'class': 'form-control'})
+        self.fields['description'].widget.attrs.update({'class': 'form-control'})
+        self.fields['start_date'].widget.attrs.update({'class': 'form-control'})
+        self.fields['due_date'].widget.attrs.update({'class': 'form-control'})
+        self.fields['status'].widget.attrs.update({'class': 'form-control'})
+        self.fields['payment_amount'].widget.attrs.update({'class': 'form-control', 'min': 0})

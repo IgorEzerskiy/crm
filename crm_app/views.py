@@ -4,7 +4,8 @@ from django.db import transaction
 from django.http import HttpResponseRedirect
 from django.views.generic import ListView, CreateView, UpdateView, DetailView
 from django.forms import ModelChoiceField
-from crm_app.forms import UserLoginForm, UserCreateForm, ClientModelForm, CompanyUpdateForm, OrderCreateForm
+from crm_app.forms import UserLoginForm, UserCreateForm, ClientModelForm, CompanyUpdateForm, OrderCreateForm, \
+    OrderUpdateForm
 from crm_app.models import Order, Client, Company, User, Status, Comment
 
 
@@ -53,7 +54,9 @@ class UserCreateView(CreateView):
     success_url = '/login'
 
     def form_valid(self, form):
-        user = form.save(commit=False)
+        user = form.save(
+            commit=False
+        )
         company = Company.objects.filter(
             name=self.request.POST.get('company')
         )
@@ -113,7 +116,8 @@ class UserConnectionRequestsListView(AdminPassedMixin, LoginRequiredMixin, ListV
         queryset = super().get_queryset()
 
         return queryset.filter(
-            company=self.request.user.company, is_active=False
+            company=self.request.user.company,
+            is_active=False
         )
 
     def post(self, request, *args, **kwargs):
@@ -122,7 +126,9 @@ class UserConnectionRequestsListView(AdminPassedMixin, LoginRequiredMixin, ListV
 
         if approved_id:
             try:
-                user = User.objects.get(id=approved_id)
+                user = User.objects.get(
+                    id=approved_id
+                )
                 user.is_active = True
                 user.save()
             except User.DoesNotExist:
@@ -131,7 +137,9 @@ class UserConnectionRequestsListView(AdminPassedMixin, LoginRequiredMixin, ListV
 
         if cancel_id:
             try:
-                user = User.objects.get(id=cancel_id)
+                user = User.objects.get(
+                    id=cancel_id
+                )
                 user.delete()
             except User.DoesNotExist:
                 # TODO: Add message
@@ -155,7 +163,9 @@ class ClientCreateView(LoginRequiredMixin, CreateView):
         return kwargs
 
     def form_valid(self, form):
-        client = form.save(commit=False)
+        client = form.save(
+            commit=False
+        )
         client.service_company = self.request.user.company
 
         return super().form_valid(
@@ -165,7 +175,7 @@ class ClientCreateView(LoginRequiredMixin, CreateView):
 
 class ClientUpdateView(LoginRequiredMixin, UpdateView):
     form_class = ClientModelForm
-    queryset = Client.objects.all()
+    queryset = Client.objects.all()  # rewrote get_queryset for only one company
     template_name = 'edit_client.html'
     success_url = '/clients'
     login_url = '/login'
@@ -181,7 +191,7 @@ class ClientUpdateView(LoginRequiredMixin, UpdateView):
 
 class CompanyUpdateView(AdminPassedMixin, LoginRequiredMixin, UpdateView):
     form_class = CompanyUpdateForm
-    queryset = Company.objects.all()
+    queryset = Company.objects.all()  # rewrote get_queryset for only one company
     template_name = 'edit_company.html'
     success_url = '/'
     login_url = '/login'
@@ -209,22 +219,47 @@ class OrderCreateView(LoginRequiredMixin, CreateView):
             company=self.request.user.company
         )
 
-        order_form.fields['client'] = ModelChoiceField(queryset=clients)
-        order_form.fields['client'].widget.attrs.update({'class': 'form-control'})
-        order_form.fields['manager'] = ModelChoiceField(queryset=managers)
-        order_form.fields['manager'].widget.attrs.update({'class': 'form-control'})
+        order_form.fields['client'] = ModelChoiceField(
+            queryset=clients
+        )
+        order_form.fields['client'].widget.attrs.update(
+            {'class': 'form-control'}
+        )
+        order_form.fields['manager'] = ModelChoiceField(
+            queryset=managers
+        )
+        order_form.fields['manager'].widget.attrs.update(
+            {'class': 'form-control'}
+        )
         context['new_order'] = order_form
 
         return context
 
     def form_valid(self, form):
-        order = form.save(commit=False)
+        order = form.save(
+            commit=False
+        )
         status = Status.objects.first()
         order.status = status
         order.save()
 
         return super().form_valid(
             form=form
+        )
+
+
+class OrderUpdateView(LoginRequiredMixin, UpdateView):
+    template_name = 'update_order.html'
+    queryset = Order.objects.all()
+    form_class = OrderUpdateForm
+    success_url = '/'
+    login_url = '/login'
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+
+        return queryset.filter(
+            manager__company=self.request.user.company
         )
 
 
@@ -237,7 +272,9 @@ class CommentCreateView(LoginRequiredMixin, CreateView):
         comment_order = self.request.POST.get('comment_order')
 
         try:
-            order = Order.objects.get(id=comment_order)
+            order = Order.objects.get(
+                id=comment_order
+            )
             if len(comment_text) < 450:
                 # TODO: Add message
                 pass
@@ -245,7 +282,8 @@ class CommentCreateView(LoginRequiredMixin, CreateView):
                 Comment.objects.create(
                     text=comment_text,
                     order=order,
-                    author=self.request.user)
+                    author=self.request.user
+                )
             else:
                 # TODO: Add message
                 pass

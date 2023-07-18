@@ -1,16 +1,16 @@
 {% extends 'index.html' %}
 
 {% block content %}
-    <div class="container text-center">
-        <div class="row">
+    <div class="container text-center" style="display: flex; align-items: center; justify-content: center">
+        <div class="row row-cols-4">
             {% for status in statuses %}
                 <div class="col"
-                     style="margin-right: 10px; margin-left: 10px; display: flex; flex-direction: column; align-items: center; border: 1px solid; border-radius: 15px; width: 16rem; ">
+                     style="margin-right: 10px; margin-left: 10px; margin-top: 15px; display: flex; flex-direction: column; align-items: center; border: 1px solid; border-radius: 15px; width: 18rem; ">
                     <h3>{{ status.name }}</h3>
                     <!--order-->
                     {% for order in orders %}
                         {% if status.name == order.status.name %}
-                            <div class="card" style="width: 17rem; margin-bottom: 15px;">
+                            <div class="card" style="width: 100%; margin-bottom: 15px;">
                                 <div class="card-body">
                                     <h5 class="card-title">{{ order.title }}</h5>
                                 </div>
@@ -22,10 +22,13 @@
                                     <li class="list-group-item">Due date: {{ order.due_date }}</li>
                                     <li class="list-group-item">Payment amount: {{ order.payment_amount }}</li>
                                 </ul>
-                                <div class="card-body">
-                                    <button type="button" class="btn btn-primary" style="margin-right: 15px">
-                                        Update order
-                                    </button>
+                                <div class="card-body" style="display: flex; align-items: center; justify-content: center">
+                                    <form method="get" action={% url "update_order" order.id %}>
+
+                                        <button type="submit" class="btn btn-primary" style="margin-right: 10px">
+                                            Update order
+                                        </button>
+                                    </form>
                                     <!-- Button trigger modal -->
                                     <button type="button" class="btn btn-primary" data-bs-toggle="modal"
                                             data-bs-target="#exampleModal{{ order.id }}">
