@@ -21,7 +21,7 @@ class Client(models.Model):
     email = models.EmailField(null=True, blank=True)
     telegram = models.CharField(max_length=60, null=True, blank=True)
     slack = models.CharField(max_length=60, null=True, blank=True)
-    service_company = models.ForeignKey(Company, on_delete=models.CASCADE, null=True, blank=True)
+    service_company = models.ForeignKey(Company, on_delete=models.DO_NOTHING, null=True, blank=True)  # Are we need to use null, blank?
 
     def __str__(self):
         return self.first_name + '_' + self.last_name + '_' + self.service_company.name

@@ -7,6 +7,7 @@ from django.forms import ModelChoiceField
 from crm_app.forms import UserLoginForm, UserCreateForm, ClientModelForm, CompanyUpdateForm, OrderCreateForm, \
     OrderUpdateForm
 from crm_app.models import Order, Client, Company, User, Status, Comment
+from django.contrib import messages
 
 
 # Create your views here.
@@ -65,6 +66,7 @@ class UserCreateView(CreateView):
             user.is_active = False
             user.save()
         else:
+            username = user.username
             with transaction.atomic():
                 company = Company.objects.create(
                     name=self.request.POST.get('company')
@@ -72,7 +74,10 @@ class UserCreateView(CreateView):
                 user.company = company
                 user.is_company_admin = True
                 user.save()
-
+            messages.success(
+                self.request,
+                f'HI, {username}. You created a new company called: {company.name}.'
+            )
         return super().form_valid(
             form=form
         )
@@ -131,9 +136,15 @@ class UserConnectionRequestsListView(AdminPassedMixin, LoginRequiredMixin, ListV
                 )
                 user.is_active = True
                 user.save()
+                messages.success(
+                    self.request,
+                    'User added to your company successfully.'
+                )
             except User.DoesNotExist:
-                # TODO: Add message
-                pass
+                messages.error(
+                    self.request,
+                    f'User does not exist.'
+                )
 
         if cancel_id:
             try:
@@ -141,9 +152,15 @@ class UserConnectionRequestsListView(AdminPassedMixin, LoginRequiredMixin, ListV
                     id=cancel_id
                 )
                 user.delete()
+                messages.success(
+                    self.request,
+                    "The user's request was rejected successfully."
+                )
             except User.DoesNotExist:
-                # TODO: Add message
-                pass
+                messages.error(
+                    self.request,
+                    f'User does not exist.'
+                )
 
         return HttpResponseRedirect('/users-connections-requests')
 
@@ -168,6 +185,11 @@ class ClientCreateView(LoginRequiredMixin, CreateView):
         )
         client.service_company = self.request.user.company
 
+        messages.success(
+            self.request,
+            "Client was create successfully."
+        )
+
         return super().form_valid(
             form=form
         )
@@ -175,7 +197,7 @@ class ClientCreateView(LoginRequiredMixin, CreateView):
 
 class ClientUpdateView(LoginRequiredMixin, UpdateView):
     form_class = ClientModelForm
-    queryset = Client.objects.all()  # rewrote get_queryset for only one company
+    queryset = Client.objects.all()
     template_name = 'edit_client.html'
     success_url = '/clients'
     login_url = '/login'
@@ -188,13 +210,49 @@ class ClientUpdateView(LoginRequiredMixin, UpdateView):
 
         return kwargs
 
+    def get_queryset(self):
+        queryset = super().get_queryset()
+
+        return queryset.filter(
+            service_company=self.request.user.company
+        )
+
+    def form_valid(self, form):
+
+        messages.success(
+            self.request,
+            "Client was update successfully."
+        )
+
+        return super().form_valid(
+            form=form
+        )
+
 
 class CompanyUpdateView(AdminPassedMixin, LoginRequiredMixin, UpdateView):
     form_class = CompanyUpdateForm
-    queryset = Company.objects.all()  # rewrote get_queryset for only one company
+    queryset = Company.objects.all()
     template_name = 'edit_company.html'
     success_url = '/'
     login_url = '/login'
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+
+        return queryset.filter(
+            name=self.request.user.company.name
+        )
+
+    def form_valid(self, form):
+
+        messages.success(
+            self.request,
+            "Company was update successfully."
+        )
+
+        return super().form_valid(
+            form=form
+        )
 
 
 class UserDetailView(LoginRequiredMixin, DetailView):
@@ -222,11 +280,12 @@ class OrderCreateView(LoginRequiredMixin, CreateView):
         order_form.fields['client'] = ModelChoiceField(
             queryset=clients
         )
-        order_form.fields['client'].widget.attrs.update(
-            {'class': 'form-control'}
-        )
         order_form.fields['manager'] = ModelChoiceField(
             queryset=managers
+        )
+
+        order_form.fields['client'].widget.attrs.update(
+            {'class': 'form-control'}
         )
         order_form.fields['manager'].widget.attrs.update(
             {'class': 'form-control'}
@@ -242,6 +301,11 @@ class OrderCreateView(LoginRequiredMixin, CreateView):
         status = Status.objects.first()
         order.status = status
         order.save()
+
+        messages.success(
+            self.request,
+            "Order was create successfully."
+        )
 
         return super().form_valid(
             form=form
@@ -262,6 +326,17 @@ class OrderUpdateView(LoginRequiredMixin, UpdateView):
             manager__company=self.request.user.company
         )
 
+    def form_valid(self, form):
+
+        messages.success(
+            self.request,
+            "Order was update successfully."
+        )
+
+        return super().form_valid(
+            form=form
+        )
+
 
 class CommentCreateView(LoginRequiredMixin, CreateView):
     success_url = '/'
@@ -275,9 +350,12 @@ class CommentCreateView(LoginRequiredMixin, CreateView):
             order = Order.objects.get(
                 id=comment_order
             )
-            if len(comment_text) < 450:
-                # TODO: Add message
-                pass
+            if len(comment_text) > 450:
+                messages.error(
+                    self.request,
+                    "Your comment contains more than 450 characters."
+                )
+                return HttpResponseRedirect(self.success_url)
             if comment_text and comment_order:
                 Comment.objects.create(
                     text=comment_text,
@@ -285,10 +363,15 @@ class CommentCreateView(LoginRequiredMixin, CreateView):
                     author=self.request.user
                 )
             else:
-                # TODO: Add message
-                pass
+                messages.error(
+                    self.request,
+                    "Error creating comment."
+                )
+                return HttpResponseRedirect(self.success_url)
         except Order.DoesNotExist:
-            # TODO: Add message
-            pass
+            messages.error(
+                self.request,
+                "Order does not exist."
+            )
 
         return HttpResponseRedirect(self.success_url)

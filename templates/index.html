@@ -63,6 +63,26 @@
     </div>
 </nav>
 <main style="padding-left: 30px; padding-right: 30px; margin-top: 100px; margin-bottom: 100px; overflow: hidden;">
+    <div style="margin-top: 15px; width: 300px; height: auto;">
+        {% for message in messages %}
+            {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+                <div class="w-auto p-3">
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <strong>Error: </strong> {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                </div>
+
+            {% else %}
+                <div class="w-auto p-3">
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <strong>Good: </strong> {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
     {% block content %}
     {% endblock %}
 </main>
