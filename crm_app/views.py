@@ -2,7 +2,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.views import LoginView, LogoutView
 from django.db import transaction
 from django.http import HttpResponseRedirect
-from django.views.generic import ListView, CreateView, UpdateView, DetailView
+from django.views.generic import ListView, CreateView, UpdateView, DetailView, DeleteView
 from django.forms import ModelChoiceField
 from crm_app.forms import UserLoginForm, UserCreateForm, ClientModelForm, CompanyUpdateForm, OrderCreateForm, \
     OrderUpdateForm
@@ -375,3 +375,42 @@ class CommentCreateView(LoginRequiredMixin, CreateView):
             )
 
         return HttpResponseRedirect(self.success_url)
+
+
+class ClientDeleteView(AdminPassedMixin, LoginRequiredMixin, DeleteView):
+    login_url = 'login/'
+    success_url = '/clients'
+    queryset = Client.objects.all()
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+
+        return queryset.filter(
+            service_company=self.request.user.company
+        )
+
+    def form_valid(self, form):
+        client = self.get_object()
+        orders = Order.objects.filter(
+            client__id=client.id,
+            manager__company=self.request.user.company
+        )
+        client_first_last_name = self.request.POST.get('client_f_l_name').split('-')
+
+        if client_first_last_name[0] == client.first_name \
+                and client_first_last_name[1] == client.last_name:
+            with transaction.atomic():
+                for order in orders:
+                    order.delete()
+                client.delete()
+
+            messages.success(
+                self.request,
+                "Client was delete successfully."
+            )
+        else:
+            messages.error(
+                self.request,
+                "Error deleting client. The user's first and last name entered is not correct."
+            )
+        return HttpResponseRedirect(self.get_success_url())
