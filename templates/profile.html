@@ -1,53 +1,147 @@
 {% extends 'index.html' %}
 {% block content %}
-    <div class="container py-5 h-100">
-    <div class="row d-flex justify-content-center align-items-center h-100">
-        <div class="col col-lg-9 col-xl-7">
-            <div class="card">
-                <div class="rounded-top text-white d-flex flex-row"
-                     style="background-color: CornflowerBlue; height:200px;">
-                    <div class="ms-4 mt-5 d-flex flex-column" style="width: 150px;">
-                        <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-profiles/avatar-1.webp"
-                             alt="Generic placeholder image" class="img-fluid img-thumbnail mt-4 mb-2"
-                             style="width: 150px; z-index: 1">
-                        <button type="button" class="btn btn-outline-dark" data-mdb-ripple-color="dark"
-                                style="z-index: 1;">
-                            Edit profile
-                        </button>
+    {#    <div class="container py-5 h-100">#}
+    {#        <div class="row d-flex justify-content-center align-items-center ">#}
+    {#            <div class="col col-lg-9 col-xl-7">#}
+    {#                <div class="card">#}
+    {#                    <div class="rounded-top text-white d-flex flex-row"#}
+    {#                         style="background-color:  #4d4dff; height:200px;">#}
+    {#                        <div class="ms-4 mt-5 d-flex flex-column" style="width: 150px;">#}
+    {#                            <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-profiles/avatar-1.webp"#}
+    {#                                 alt="Generic placeholder image" class="img-fluid img-thumbnail mt-4 mb-2"#}
+    {#                                 style="width: 150px; z-index: 1">#}
+    {#                        </div>#}
+    {#                        <div class="ms-3" style="margin-top: 130px;">#}
+    {#                            <h5> {{ request.user.first_name }} {{ request.user.last_name }} </h5>#}
+    {#                            <p> Username: {{ request.user.username }}</p>#}
+    {#                        </div>#}
+    {#                    </div>#}
+    {#                    <div class="p-4 text-black" style="background-color: #FFC0CB">#}
+    {#                        <div class="d-flex justify-content-center text-center py-1">#}
+    {#                            <div class="px-3">#}
+    {#                                <p class="small  mb-0">#}
+    {#                                    <a type="button" class="btn btn-outline-dark"#}
+    {#                                       href="{% url 'update_profile' request.user.id %}" data-mdb-ripple-color="dark"#}
+    {#                                       style="z-index: 1;">#}
+    {#                                        Edit profile#}
+    {#                                    </a>#}
+    {#                                </p>#}
+    {#                            </div>#}
+    {#                            <div class="px-3">#}
+    {#                                <p class="small  mb-0">#}
+    {#                                    <button type="button" class="btn btn-outline-dark" data-mdb-ripple-color="dark"#}
+    {#                                            style="z-index: 1;">#}
+    {#                                        Edit password#}
+    {#                                    </button>#}
+    {#                                </p>#}
+    {#                            </div>#}
+    {#                            <div class="px-3">#}
+    {#                                <p class="small mb-0">#}
+    {#                                    <button type="button" class="btn btn-outline-dark" data-mdb-ripple-color="dark"#}
+    {#                                            style="z-index: 1;">#}
+    {#                                        Edit company#}
+    {#                                    </button>#}
+    {#                                </p>#}
+    {#                            </div>#}
+    {#                        </div>#}
+    {#                    </div>#}
+    {#                    <div class="card-body  text-black rounded-bottom" style="background-color: #cccccc">#}
+    {#                        <div class="mb-5">#}
+    {#                            <div class="p-4">#}
+    {#                                <div class="row">#}
+    {#                                    <div class="col-sm-3">#}
+    {#                                        <p class="mb-0">Email</p>#}
+    {#                                    </div>#}
+    {#                                    <div class="col-sm-9">#}
+    {#                                        <p class=" mb-0">{{ request.user.email }}</p>#}
+    {#                                    </div>#}
+    {#                                </div>#}
+    {#                                <hr>#}
+    {#                                <div class="row">#}
+    {#                                    <div class="col-sm-3">#}
+    {#                                        <p class="mb-0">Company</p>#}
+    {#                                    </div>#}
+    {#                                    <div class="col-sm-9">#}
+    {#                                        <p class=" mb-0">{{ request.user.company }}</p>#}
+    {#                                    </div>#}
+    {#                                </div>#}
+    {#                            </div>#}
+    {#                        </div>#}
+    {#                    </div>#}
+    {#                </div>#}
+    {#            </div>#}
+    {#        </div>#}
+    {#    </div>#}
+
+
+
+
+    <div class="container rounded  mt-5 mb-5">
+        <div class="row" style="align-items: center; justify-content: center ">
+            <div class="col-md-3 border-right">
+                <div class="d-flex flex-column align-items-center text-center p-3 py-5">
+                    <img class="rounded-circle mt-5"
+                         width="150px"
+                         src="https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg">
+                    <span class="font-weight-bold">{{ request.user.username }}</span>
+                    <span class="text-white-50">{{ request.user.email }}</span>
+                </div>
+            </div>
+            <div class="col-md-5 border-right" style="border-right: solid 1px; border-left: solid 1px">
+                <div class="p-3 py-5">
+                    <div class="d-flex justify-content-left align-items-left mb-3" style="margin-left: 110px ">
+                        <h4 class="text-right">Profile Info</h4>
                     </div>
-                    <div class="ms-3" style="margin-top: 130px;">
-                        <h5>Andy Horwitz</h5>
-                        <p>New York</p>
+                    <div class="row mt-2">
+                        <div class="col-md-6"><label class="labels">Name</label>
+                            <h3> {{ request.user.first_name }}  </h3>
+                        </div>
+                        <div class="col-md-6"><label class="labels">Surname</label>
+                            <h3> {{ request.user.last_name }}</h3>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-12"><label class="labels">Company</label>
+                            <h3> {{ request.user.company }}</h3>
+                        </div>
+                    </div>
+                    <div class="mt-5 text-center" style="display: flex; justify-content: space-between">
+                        <a type="button" href="{% url 'update_profile' request.user.id %}"
+                           class="btn btn-primary profile-button">Edit profile</a>
+                        <a type="button" href="{% url 'update_profile' request.user.id %}"
+                           class="btn btn-danger profile-button">Change password</a>
                     </div>
                 </div>
-                <div class="p-4 text-black" style="background-color: #f9aeae;">
-                    <div class="d-flex justify-content-end text-center py-1">
-                        <div>
-                            <p class="mb-1 h5">253</p>
-                            <p class="small  mb-0">Photos</p>
+            </div>
+            <div class="col-md-4 ">
+                <div class="p-3 py-5">
+                    <div class="d-flex justify-content-left align-items-left mb-3" style="margin-left: 110px ">
+                        <h4 class="text-right">Company Info</h4>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-md-6"><label class="labels">Name</label>
+                            <h3> {{ request.user.company.name }}  </h3>
                         </div>
-                        <div class="px-3">
-                            <p class="mb-1 h5">1026</p>
-                            <p class="small mb-0">Followers</p>
+                        <div class="col-md-6"><label class="labels">Phone</label>
+                            <h3> {{ request.user.company.telephone }}</h3>
                         </div>
-                        <div>
-                            <p class="mb-1 h5">478</p>
-                            <p class="small  mb-0">Following</p>
+                        <div class="row mt-3">
+                            <div class="col-md-6"><label class="labels">Email</label>
+                                <h3> {{ request.user.company.email }}</h3>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="card-body p-4 text-black">
-                    <div class="mb-5">
-                        <p class="lead fw-normal mb-1">About</p>
-                        <div class="p-4" style="background-color: #ffbaa8;">
-                            <p class="font-italic mb-1">Web Developer</p>
-                            <p class="font-italic mb-1">Lives in New York</p>
-                            <p class="font-italic mb-0">Photographer</p>
-                        </div>
+                    <div class="mt-5 text-center" style="display: flex; justify-content: space-between">
+                        {% if request.user.is_company_admin %}
+                            <a type="button" href="{% url 'edit_company' request.user.company.id %}"
+                               class="btn btn-primary profile-button">Edit company</a>
+                        {% endif %}
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    </div>
+
+
+
 {% endblock %}
