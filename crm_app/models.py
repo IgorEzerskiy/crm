@@ -45,7 +45,7 @@ class User(AbstractUser):
 class Order(models.Model):
     title = models.CharField(max_length=150)
     description = models.TextField(max_length=550)
-    client = models.ForeignKey(Client, on_delete=models.DO_NOTHING, related_name='order')
+    client = models.ForeignKey(Client, on_delete=models.DO_NOTHING, related_name='order', null=True, blank=True)
     manager = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name='order')
     start_date = models.DateField()
     due_date = models.DateField()

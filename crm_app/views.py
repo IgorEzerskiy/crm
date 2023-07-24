@@ -375,12 +375,3 @@ class CommentCreateView(LoginRequiredMixin, CreateView):
             )
 
         return HttpResponseRedirect(self.success_url)
-
-
-class ProfileInfoUpdateView(UpdateView):
-    template_name = 'update_profile.html'
-    queryset = User.objects.all()
-    model = User
-    fields = ['username', 'first_name', 'last_name', 'email']
-    success_url = '/'
-
