@@ -17,7 +17,7 @@ class UserCreateForm(UserCreationForm):
 
     class Meta:
         model = User
-        fields = ('username', )
+        fields = ('username',)
 
     def __init__(self, *args, **kwargs):
         super(UserCreateForm, self).__init__(*args, **kwargs)
@@ -206,3 +206,19 @@ class OrderUpdateForm(ModelForm):
         self.fields['due_date'].widget.attrs.update({'class': 'form-control'})
         self.fields['status'].widget.attrs.update({'class': 'form-control'})
         self.fields['payment_amount'].widget.attrs.update({'class': 'form-control', 'min': 0})
+
+
+class PasswordChangeForm(ModelForm):
+    class Meta:
+        model = User
+        fields = ['password']
+
+    def __init__(self, *args, **kwargs):
+        super(PasswordChangeForm, self).__init__(*args, **kwargs)
+        self.fields['password'].widget.attrs.update({'class': 'form-control'})
+
+
+
+    def clean_password(self):
+        pass
+

@@ -5,7 +5,7 @@ from django.http import HttpResponseRedirect
 from django.views.generic import ListView, CreateView, UpdateView, DetailView, DeleteView
 from django.forms import ModelChoiceField
 from crm_app.forms import UserLoginForm, UserCreateForm, ClientModelForm, CompanyUpdateForm, OrderCreateForm, \
-    OrderUpdateForm
+    OrderUpdateForm, PasswordChangeForm
 from crm_app.models import Order, Client, Company, User, Status, Comment
 from django.contrib import messages
 
@@ -218,7 +218,6 @@ class ClientUpdateView(LoginRequiredMixin, UpdateView):
         )
 
     def form_valid(self, form):
-
         messages.success(
             self.request,
             "Client was update successfully."
@@ -244,7 +243,6 @@ class CompanyUpdateView(AdminPassedMixin, LoginRequiredMixin, UpdateView):
         )
 
     def form_valid(self, form):
-
         messages.success(
             self.request,
             "Company was update successfully."
@@ -258,6 +256,7 @@ class CompanyUpdateView(AdminPassedMixin, LoginRequiredMixin, UpdateView):
 class UserDetailView(LoginRequiredMixin, DetailView):
     queryset = User.objects.all()
     template_name = 'profile.html'
+    extra_context = {'form': PasswordChangeForm}
 
 
 class OrderCreateView(LoginRequiredMixin, CreateView):
@@ -327,7 +326,6 @@ class OrderUpdateView(LoginRequiredMixin, UpdateView):
         )
 
     def form_valid(self, form):
-
         messages.success(
             self.request,
             "Order was update successfully."
@@ -421,4 +419,11 @@ class ProfileInfoUpdateView(UpdateView):
     queryset = User.objects.all()
     model = User
     fields = ['username', 'first_name', 'last_name', 'email']
+    success_url = '/'
+
+
+class PasswordUpdateView(UpdateView):
+    queryset = User.objects.all()
+    form_class = PasswordChangeForm
+    http_method_names = ['post']
     success_url = '/'

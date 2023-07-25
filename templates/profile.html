@@ -1,81 +1,5 @@
 {% extends 'index.html' %}
 {% block content %}
-    {#    <div class="container py-5 h-100">#}
-    {#        <div class="row d-flex justify-content-center align-items-center ">#}
-    {#            <div class="col col-lg-9 col-xl-7">#}
-    {#                <div class="card">#}
-    {#                    <div class="rounded-top text-white d-flex flex-row"#}
-    {#                         style="background-color:  #4d4dff; height:200px;">#}
-    {#                        <div class="ms-4 mt-5 d-flex flex-column" style="width: 150px;">#}
-    {#                            <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-profiles/avatar-1.webp"#}
-    {#                                 alt="Generic placeholder image" class="img-fluid img-thumbnail mt-4 mb-2"#}
-    {#                                 style="width: 150px; z-index: 1">#}
-    {#                        </div>#}
-    {#                        <div class="ms-3" style="margin-top: 130px;">#}
-    {#                            <h5> {{ request.user.first_name }} {{ request.user.last_name }} </h5>#}
-    {#                            <p> Username: {{ request.user.username }}</p>#}
-    {#                        </div>#}
-    {#                    </div>#}
-    {#                    <div class="p-4 text-black" style="background-color: #FFC0CB">#}
-    {#                        <div class="d-flex justify-content-center text-center py-1">#}
-    {#                            <div class="px-3">#}
-    {#                                <p class="small  mb-0">#}
-    {#                                    <a type="button" class="btn btn-outline-dark"#}
-    {#                                       href="{% url 'update_profile' request.user.id %}" data-mdb-ripple-color="dark"#}
-    {#                                       style="z-index: 1;">#}
-    {#                                        Edit profile#}
-    {#                                    </a>#}
-    {#                                </p>#}
-    {#                            </div>#}
-    {#                            <div class="px-3">#}
-    {#                                <p class="small  mb-0">#}
-    {#                                    <button type="button" class="btn btn-outline-dark" data-mdb-ripple-color="dark"#}
-    {#                                            style="z-index: 1;">#}
-    {#                                        Edit password#}
-    {#                                    </button>#}
-    {#                                </p>#}
-    {#                            </div>#}
-    {#                            <div class="px-3">#}
-    {#                                <p class="small mb-0">#}
-    {#                                    <button type="button" class="btn btn-outline-dark" data-mdb-ripple-color="dark"#}
-    {#                                            style="z-index: 1;">#}
-    {#                                        Edit company#}
-    {#                                    </button>#}
-    {#                                </p>#}
-    {#                            </div>#}
-    {#                        </div>#}
-    {#                    </div>#}
-    {#                    <div class="card-body  text-black rounded-bottom" style="background-color: #cccccc">#}
-    {#                        <div class="mb-5">#}
-    {#                            <div class="p-4">#}
-    {#                                <div class="row">#}
-    {#                                    <div class="col-sm-3">#}
-    {#                                        <p class="mb-0">Email</p>#}
-    {#                                    </div>#}
-    {#                                    <div class="col-sm-9">#}
-    {#                                        <p class=" mb-0">{{ request.user.email }}</p>#}
-    {#                                    </div>#}
-    {#                                </div>#}
-    {#                                <hr>#}
-    {#                                <div class="row">#}
-    {#                                    <div class="col-sm-3">#}
-    {#                                        <p class="mb-0">Company</p>#}
-    {#                                    </div>#}
-    {#                                    <div class="col-sm-9">#}
-    {#                                        <p class=" mb-0">{{ request.user.company }}</p>#}
-    {#                                    </div>#}
-    {#                                </div>#}
-    {#                            </div>#}
-    {#                        </div>#}
-    {#                    </div>#}
-    {#                </div>#}
-    {#            </div>#}
-    {#        </div>#}
-    {#    </div>#}
-
-
-
-
     <div class="container rounded  mt-5 mb-5">
         <div class="row" style="align-items: center; justify-content: center ">
             <div class="col-md-3 border-right">
@@ -108,8 +32,66 @@
                     <div class="mt-5 text-center" style="display: flex; justify-content: space-between">
                         <a type="button" href="{% url 'update_profile' request.user.id %}"
                            class="btn btn-primary profile-button">Edit profile</a>
-                        <a type="button" href="{% url 'update_profile' request.user.id %}"
-                           class="btn btn-danger profile-button">Change password</a>
+
+                        <!-- Button trigger modal change password -->
+
+                        <button type="button" class="btn btn-danger" data-bs-toggle="modal"
+                                data-bs-target="#exampleModal_change_{{ request.user.id }}">
+                            Change password
+                        </button>
+
+                        <!-- Modal change password -->
+                        <div class="modal fade" id="exampleModal_change_{{ request.user.id }}" tabindex="-1"
+                             aria-labelledby="exampleModalLabel_change_{{ request.user.id }}"
+                             aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h1 class="modal-title fs-5"
+                                            id="exampleModalLabel_change_{{ request.user.id }}">Changing password</h1>
+                                        <button type="button" class="btn-close"
+                                                data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                    </div>
+                                    <form method="post" style="width: 100%;"
+                                          action={% url "change_password" request.user.id %}>
+                                        {% csrf_token %}
+                                        <div class="modal-body">
+                                            <div class="form-group">
+                                                <label for="inputPasswordOld">Current Password</label>
+                                                <input type="password" name="current_password" class="form-control" id="inputPasswordOld"
+                                                       required="">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="inputPasswordNew">New Password</label>
+                                                {{ form.password}}
+{#                                                <input type="password" class="form-control" id="inputPasswordNew"#}
+{#                                                       required="">#}
+                                                <span class="form-text small text-muted">
+                                            The password must be 8-20 characters, and must <em>not</em> contain spaces.
+                                        </span>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="inputPasswordNewVerify">Confirm new password</label>
+                                                <input type="password" name='confirmation' class="form-control" id="inputPasswordNewVerify"
+                                                       required="">
+                                                <span class="form-text small text-muted">
+                                            To confirm, type the new password again.
+                                        </span>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer"
+                                             style="width: auto; display: flex; align-items: flex-start; justify-content: flex-start">
+                                            <div class="form-group">
+                                                <button type="submit" class="btn btn-success  float-right">Save
+                                                </button>
+                                            </div>
+
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
