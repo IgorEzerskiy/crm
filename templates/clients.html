@@ -1,5 +1,23 @@
 {% extends 'index.html' %}
 {% block content %}
+    <div class="container"
+         style="display: flex; align-items: flex-start; justify-content: flex-start; margin-right: 5px; margin-left: 5px">
+        <form style="margin-right: 15px">
+            <input type="hidden" value="all" name="filter_all">
+            <input type="submit" value="All" class="btn btn-outline-success"
+                   style="width: 150px; margin-top: 15px;">
+        </form>
+        <form style="margin-right: 15px">
+            <input type="hidden" value="active" name="filter_active">
+            <input type="submit" value="Active" class="btn btn-outline-success"
+                   style="width: 150px; margin-top: 15px;">
+        </form>
+        <form style="margin-right: 15px">
+            <input type="hidden" value="inactive" name="filter_inactive">
+            <input type="submit" value="Inactive" class="btn btn-outline-success"
+                   style="width: 150px; margin-top: 15px;">
+        </form>
+    </div>
     <div style="display: flex;
   justify-content: center" class="mb-1">
         <h3>Clients</h3>
@@ -13,6 +31,7 @@
             <th scope="col">Email</th>
             <th scope="col">Telegram</th>
             <th scope="col">Service company</th>
+            <th scope="col">Status</th>
             <th scope="col"></th>
             <th scope="col"></th>
         </tr>
@@ -26,6 +45,7 @@
                 <td>{{ client.email }}</td>
                 <td>{{ client.telegram }}</td>
                 <td>{{ client.service_company.name }}</td>
+                <td>{{ client.is_active_client }}</td>
                 <td>
                     <a class="btn btn-outline-primary" style="width: 150px;"
                        href="{% url 'edit_client' client.id %} ">Edit
@@ -64,7 +84,8 @@
                                     </div>
                                     <div class="modal-footer"
                                          style="width: auto; display: flex; align-items: flex-start; justify-content: flex-start">
-                                        <form method="post" style="width: 100%;" action={% url "client_delete" client.id %}>
+                                        <form method="post" style="width: 100%;"
+                                              action={% url "client_delete" client.id %}>
                                             {% csrf_token %}
                                             <input class="form-control" type="text"
                                                    value="{{ client.first_name }}-{{ client.last_name }}"
@@ -75,7 +96,8 @@
                                                 to confirm deletion:</label>
                                             <input class="form-control" type="text" name="client_f_l_name" id="subm"
                                                    style="margin-top: 2px">
-                                            <button type="submit" class="btn btn-danger" style="margin-top: 15px">Delete
+                                            <button type="submit" class="btn btn-danger" style="margin-top: 15px">
+                                                Delete
                                             </button>
                                         </form>
                                     </div>

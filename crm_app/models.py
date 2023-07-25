@@ -16,7 +16,7 @@ class Company(models.Model):
 class Client(models.Model):
     first_name = models.CharField(max_length=35)
     last_name = models.CharField(max_length=45)
-    # client_company_name = models.CharField(max_length=100)
+    is_active_client = models.BooleanField(default=True)
     telephone = PhoneNumberField(null=False, blank=False)
     email = models.EmailField(null=True, blank=True)
     telegram = models.CharField(max_length=60, null=True, blank=True)
@@ -51,6 +51,7 @@ class Order(models.Model):
     due_date = models.DateField()
     payment_amount = models.DecimalField(max_digits=15, decimal_places=2)
     status = models.ForeignKey(Status, on_delete=models.DO_NOTHING)
+    is_active_order = models.BooleanField(default=True)
 
 
 class Comment(models.Model):

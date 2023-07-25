@@ -92,6 +92,20 @@ class ClientListView(LoginRequiredMixin, ListView):
     def get_queryset(self):
         queryset = super().get_queryset()
 
+        if self.request.GET.get('filter_all') == 'all':
+            return queryset.filter(
+                service_company=self.request.user.company
+            )
+        if self.request.GET.get('filter_active') == 'active':
+            return queryset.filter(
+                service_company=self.request.user.company,
+                is_active_client=True
+            )
+        if self.request.GET.get('filter_inactive') == 'inactive':
+            return queryset.filter(
+                service_company=self.request.user.company,
+                is_active_client=False
+            )
         return queryset.filter(
             service_company=self.request.user.company
         )
@@ -212,7 +226,6 @@ class ClientUpdateView(LoginRequiredMixin, UpdateView):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-
         return queryset.filter(
             service_company=self.request.user.company
         )
@@ -399,8 +412,10 @@ class ClientDeleteView(AdminPassedMixin, LoginRequiredMixin, DeleteView):
                 and client_first_last_name[1] == client.last_name:
             with transaction.atomic():
                 for order in orders:
-                    order.delete()
-                client.delete()
+                    order.is_active_order = False
+                    order.save()
+                client.is_active_client = False
+                client.save()
 
             messages.success(
                 self.request,
