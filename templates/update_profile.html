@@ -1,46 +1,49 @@
 {% extends 'index.html' %}
 {% block content %}
-
-    <div class="container rounded  mt-5 mb-5">
-        <div class="row" style="align-items: center; justify-content: center ">
-            <div class="col-md-3 border-right">
-                <div class="d-flex flex-column align-items-center text-center p-3 py-5">
-                    <img class="rounded-circle mt-5"
-                         width="150px"
-                         src="https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg">
-                    <span class="font-weight-bold">{{ request.user.username }}</span>
-                    <span class="text-white-50">{{ request.user.email }}</span>
-                </div>
-            </div>
-            <div class="col-md-5 border-right">
-                <div class="p-3 py-5">
-                    <div class="d-flex justify-content-left align-items-left mb-3" style="margin-left: 110px ">
-                        <h4 class="text-right">Profile Info12312321</h4>
+    <form method="post" enctype="multipart/form-data" action="{% url 'update_profile' request.user.id %}">
+        {% csrf_token %}
+        <div class="container rounded  mt-5 mb-5">
+            <div class="row" style="align-items: center; justify-content: center ">
+                <div class="col-md-3 border-right">
+                    <div class="d-flex flex-column align-items-center text-center p-3 py-5">
+                        <img class="rounded-circle mt-5"
+                             width="150px"
+                             src="https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg">
+{#                        <span class="font-weight-bold"><label class="labels">Username</label>{{ form.username }}</span>#}
+{#                        <span class="text-white-50"><label class="labels">Email</label>{{ form.email }}</span>#}
                     </div>
-                    <form method="post" enctype="multipart/form-data">
-                        {% csrf_token %}
+                </div>
+                <div class="col-md-5 border-right">
+                    <div class="p-3 py-5">
+                        <div class="d-flex justify-content-left align-items-left mb-3" style="margin-left: 110px ">
+                            <h4 class="text-right">Editing profile</h4>
+                        </div>
+
                         <div class="row mt-2">
                             <div class="col-md-6"><label class="labels">Name</label>
-                                <h3> {{ request.user.first_name }}  </h3>
+                                <h3> {{ form.first_name }}  </h3>
                             </div>
                             <div class="col-md-6"><label class="labels">Surname</label>
-                                <h3> {{ request.user.last_name }}</h3>
+                                <h3> {{ form.last_name }}</h3>
                             </div>
                         </div>
-                        <div class="row mt-3">
-                            <div class="col-md-12"><label class="labels">Company</label>
-                                <h3> {{ request.user.company }}</h3>
+                        <div class="row mt-2">
+                            <div class="col-md-6"><label class="labels">Username</label>
+                                <h3> {{ form.username }}</h3>
+                            </div>
+                            <div class="col-md-6"><label class="labels">Email</label>
+                                <h3> {{ form.email }}</h3>
                             </div>
                         </div>
                         <div class="mt-5 text-center">
-                            <a type="button" href="{% url 'update_profile' request.user.id %}"
-                               class="btn btn-primary profile-button">Edit profile</a>
+                            <button type="submit"
+                                    class="btn btn-primary profile-button">Save</button>
                         </div>
-                    </form>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+    </form>
 
 {% endblock %}
 

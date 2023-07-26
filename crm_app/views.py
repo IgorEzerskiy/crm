@@ -5,7 +5,7 @@ from django.http import HttpResponseRedirect
 from django.views.generic import ListView, CreateView, UpdateView, DetailView, DeleteView
 from django.forms import ModelChoiceField
 from crm_app.forms import UserLoginForm, UserCreateForm, ClientModelForm, CompanyUpdateForm, OrderCreateForm, \
-    OrderUpdateForm, PasswordChangeForm
+    OrderUpdateForm, PasswordChangeForm, ProfileInfoUpdateForm
 from crm_app.models import Order, Client, Company, User, Status, Comment
 from django.contrib import messages
 
@@ -432,8 +432,7 @@ class ClientDeleteView(AdminPassedMixin, LoginRequiredMixin, DeleteView):
 class ProfileInfoUpdateView(UpdateView):
     template_name = 'update_profile.html'
     queryset = User.objects.all()
-    model = User
-    fields = ['username', 'first_name', 'last_name', 'email']
+    form_class = ProfileInfoUpdateForm
     success_url = '/'
 
 
