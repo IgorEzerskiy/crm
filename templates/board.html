@@ -1,6 +1,22 @@
 {% extends 'index.html' %}
 
 {% block content %}
+    <div style="display: flex;  justify-content: right; margin-right: 5px; margin-left: 5px; width: 100%">
+        <form style="display: flex; flex-direction: column; align-items: center">
+            <div class="form-floating">
+                <select class="form-select" id="floatingSelect" aria-label="Floating label select example"
+                        name="orders_filter">
+                    <option selected>Choose your filter</option>
+                    <option value="all">All orders</option>
+                    <option value="active">Active orders</option>
+                    <option value="hidden">Hidden orders</option>
+                </select>
+                <label for="floatingSelect">Filter</label>
+            </div>
+            <input type="submit" value="Apply filter" class="btn btn-outline-success"
+                   style="width: 150px; margin-top: 15px;">
+        </form>
+    </div>
     <div class="container text-center" style="display: flex; align-items: center; justify-content: center">
         <div class="row row-cols-4">
             {% for status in statuses %}
@@ -8,105 +24,105 @@
                      style="margin-right: 10px; margin-left: 10px; margin-top: 15px; display: flex; flex-direction: column; align-items: center; border: 1px solid; border-radius: 15px; width: 18rem; ">
                     <h3>{{ status.name }}</h3>
                     <!--order-->
-                    {% for order in orders %}
-                        {% if order.is_active_order %}
-                            {% if status.name == order.status.name %}
-                                <div class="card" style="width: 100%; margin-bottom: 15px;">
-                                    <div class="card-body">
-                                        <h5 class="card-title">{{ order.title }}</h5>
-                                    </div>
-                                    <ul class="list-group list-group-flush">
-                                        <li class="list-group-item">
-                                            Client: {{ order.client.first_name }} {{ order.client.last_name }}</li>
-                                        <li class="list-group-item">Tel: {{ order.client.telephone }}</li>
-                                        <li class="list-group-item">Start date: {{ order.start_date }}</li>
-                                        <li class="list-group-item">Due date: {{ order.due_date }}</li>
-                                        <li class="list-group-item">Payment amount: {{ order.payment_amount }}</li>
-                                    </ul>
-                                    <div class="card-body"
-                                         style="display: flex; align-items: center; justify-content: center">
-                                        <form method="get" action={% url "update_order" order.id %}>
+                    {% for order in object_list %}
 
-                                            <button type="submit" class="btn btn-primary" style="margin-right: 10px">
-                                                Update order
-                                            </button>
-                                        </form>
-                                        <!-- Button trigger modal -->
-                                        <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                                                data-bs-target="#exampleModal{{ order.id }}">
-                                            More info
+                        {% if status.name == order.status.name %}
+                            <div class="card" style="width: 100%; margin-bottom: 15px;">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ order.title }}</h5>
+                                </div>
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item">
+                                        Client: {{ order.client.first_name }} {{ order.client.last_name }}</li>
+                                    <li class="list-group-item">Tel: {{ order.client.telephone }}</li>
+                                    <li class="list-group-item">Start date: {{ order.start_date }}</li>
+                                    <li class="list-group-item">Due date: {{ order.due_date }}</li>
+                                    <li class="list-group-item">Payment amount: {{ order.payment_amount }}</li>
+                                </ul>
+                                <div class="card-body"
+                                     style="display: flex; align-items: center; justify-content: center">
+                                    <form method="get" action={% url "update_order" order.id %}>
+
+                                        <button type="submit" class="btn btn-primary" style="margin-right: 10px">
+                                            Update order
                                         </button>
+                                    </form>
+                                    <!-- Button trigger modal -->
+                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                            data-bs-target="#exampleModal{{ order.id }}">
+                                        More info
+                                    </button>
 
-                                        <!-- Modal -->
-                                        <div class="modal fade" id="exampleModal{{ order.id }}" tabindex="-1"
-                                             aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                            <div class="modal-dialog">
-                                                <div class="modal-content">
-                                                    <div class="modal-header">
-                                                        <h1 class="modal-title fs-5"
-                                                            id="exampleModalLabel">{{ order.title }}</h1>
-                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                                aria-label="Close"></button>
-                                                    </div>
-                                                    <div class="modal-body" style="text-align: left">
-                                                        <h5 class="card-title">Description: </h5>
-                                                        <p class="card-text">{{ order.description }} </p>
-                                                        <h5 class="card-title">Manager: </h5>
-                                                        <p class="card-text">{{ order.manager.username }} </p>
-                                                        <h5 class="card-title">Client: </h5>
-                                                        <p class="card-text">{{ order.client.first_name }} {{ order.client.last_name }}</p>
-                                                        <h5 class="card-title">Start date: </h5>
-                                                        <p class="card-text">{{ order.start_date }}</p>
-                                                        <h5 class="card-title">Due date: </h5>
-                                                        <p class="card-text">{{ order.due_date }}</p>
-                                                        <h5 class="card-title">Payment amount: </h5>
-                                                        <p class="card-text">{{ order.payment_amount }}</p>
-                                                        <h5 class="card-title">Tel: </h5>
-                                                        <p class="card-text">{{ order.client.telephone }}</p>
-                                                    </div>
-                                                    <h5 class="card-title">Comments</h5>
-                                                    <div class="modal-footer">
-                                                        <ul class="list-group list-group-flush" style=" width: 100%">
-                                                            {% for comment in comments %}
-                                                                {% if comment.order.id == order.id %}
-                                                                    <li class="list-group-item"
-                                                                        style="text-align: left">
-                                                                        <p>{{ comment.text }}</p>
-                                                                        <footer class="blockquote-footer"> write by:
-                                                                            <cite
-                                                                                    title="Source Title">{{ comment.author.username }}</cite>
-                                                                        </footer>
-                                                                    </li>
-                                                                {% endif %}
-                                                            {% endfor %}
-                                                        </ul>
-                                                    </div>
-                                                    <div class="modal-body">
-                                                        <form method="post" action={% url "add_comment" %}>
-                                                            {% csrf_token %}
-                                                            <input class="form-control" type="hidden"
-                                                                   name="comment_order" value={{ order.id }}>
-                                                            <div class="mb-3">
-                                                                <label for="exampleFormControlTextarea1"
-                                                                       class="form-label">Add
-                                                                    comment: </label>
-                                                                <textarea class="form-control"
-                                                                          id="exampleFormControlTextarea1"
-                                                                          rows="3" maxlength="450"
-                                                                          name="comment_text"></textarea>
-                                                            </div>
-                                                            <input type="submit" value="Add comment"
-                                                                   class="btn btn-outline-success"
-                                                                   style="width: 150px; margin-top: 15px;">
-                                                        </form>
-                                                    </div>
+                                    <!-- Modal -->
+                                    <div class="modal fade" id="exampleModal{{ order.id }}" tabindex="-1"
+                                         aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h1 class="modal-title fs-5"
+                                                        id="exampleModalLabel">{{ order.title }}</h1>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                            aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body" style="text-align: left">
+                                                    <h5 class="card-title">Description: </h5>
+                                                    <p class="card-text">{{ order.description }} </p>
+                                                    <h5 class="card-title">Manager: </h5>
+                                                    <p class="card-text">{{ order.manager.username }} </p>
+                                                    <h5 class="card-title">Client: </h5>
+                                                    <p class="card-text">{{ order.client.first_name }} {{ order.client.last_name }}</p>
+                                                    <h5 class="card-title">Start date: </h5>
+                                                    <p class="card-text">{{ order.start_date }}</p>
+                                                    <h5 class="card-title">Due date: </h5>
+                                                    <p class="card-text">{{ order.due_date }}</p>
+                                                    <h5 class="card-title">Payment amount: </h5>
+                                                    <p class="card-text">{{ order.payment_amount }}</p>
+                                                    <h5 class="card-title">Tel: </h5>
+                                                    <p class="card-text">{{ order.client.telephone }}</p>
+                                                </div>
+                                                <h5 class="card-title">Comments</h5>
+                                                <div class="modal-footer">
+                                                    <ul class="list-group list-group-flush" style=" width: 100%">
+                                                        {% for comment in comments %}
+                                                            {% if comment.order.id == order.id %}
+                                                                <li class="list-group-item"
+                                                                    style="text-align: left">
+                                                                    <p>{{ comment.text }}</p>
+                                                                    <footer class="blockquote-footer"> write by:
+                                                                        <cite
+                                                                                title="Source Title">{{ comment.author.username }}</cite>
+                                                                    </footer>
+                                                                </li>
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                    </ul>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <form method="post" action={% url "add_comment" %}>
+                                                        {% csrf_token %}
+                                                        <input class="form-control" type="hidden"
+                                                               name="comment_order" value={{ order.id }}>
+                                                        <div class="mb-3">
+                                                            <label for="exampleFormControlTextarea1"
+                                                                   class="form-label">Add
+                                                                comment: </label>
+                                                            <textarea class="form-control"
+                                                                      id="exampleFormControlTextarea1"
+                                                                      rows="3" maxlength="450"
+                                                                      name="comment_text"></textarea>
+                                                        </div>
+                                                        <input type="submit" value="Add comment"
+                                                               class="btn btn-outline-success"
+                                                               style="width: 150px; margin-top: 15px;">
+                                                    </form>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            {% endif %}
+                            </div>
                         {% endif %}
+
                     {% endfor %}
                 </div>
             {% endfor %}

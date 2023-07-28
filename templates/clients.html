@@ -1,20 +1,18 @@
 {% extends 'index.html' %}
 {% block content %}
-    <div class="container"
-         style="display: flex; align-items: flex-start; justify-content: flex-start; margin-right: 5px; margin-left: 5px">
-        <form style="margin-right: 15px">
-            <input type="hidden" value="all" name="filter_all">
-            <input type="submit" value="All" class="btn btn-outline-success"
-                   style="width: 150px; margin-top: 15px;">
-        </form>
-        <form style="margin-right: 15px">
-            <input type="hidden" value="active" name="filter_active">
-            <input type="submit" value="Active" class="btn btn-outline-success"
-                   style="width: 150px; margin-top: 15px;">
-        </form>
-        <form style="margin-right: 15px">
-            <input type="hidden" value="inactive" name="filter_inactive">
-            <input type="submit" value="Inactive" class="btn btn-outline-success"
+    <div style="display: flex;  justify-content: right; margin-right: 5px; margin-left: 5px; width: 100%">
+        <form style="display: flex; flex-direction: column; align-items: center">
+            <div class="form-floating">
+                <select class="form-select" id="floatingSelect" aria-label="Floating label select example"
+                        name="clients_filter">
+                    <option selected>Choose your filter</option>
+                    <option value="all">All clients</option>
+                    <option value="active">Active clients</option>
+                    <option value="inactive">Inactive clients</option>
+                </select>
+                <label for="floatingSelect">Filter</label>
+            </div>
+            <input type="submit" value="Apply filter" class="btn btn-outline-success"
                    style="width: 150px; margin-top: 15px;">
         </form>
     </div>
@@ -31,7 +29,7 @@
             <th scope="col">Email</th>
             <th scope="col">Telegram</th>
             <th scope="col">Service company</th>
-            <th scope="col">Status</th>
+            <th scope="col">Active</th>
             <th scope="col"></th>
             <th scope="col"></th>
         </tr>
@@ -51,61 +49,65 @@
                        href="{% url 'edit_client' client.id %} ">Edit
                     </a>
                 </td>
-                <td>
-                    {% if request.user.is_company_admin %}
-                        <!-- Button trigger modal delete -->
-                        <button type="button" class="btn btn-danger" data-bs-toggle="modal"
-                                data-bs-target="#exampleModal_del_{{ client.id }}">
-                            Delete
-                        </button>
+                {% if client.is_active_client %}
+                    <td>
+                        {% if request.user.is_company_admin %}
+                            <!-- Button trigger modal delete -->
+                            <button type="button" class="btn btn-danger" data-bs-toggle="modal"
+                                    data-bs-target="#exampleModal_del_{{ client.id }}">
+                                Delete
+                            </button>
 
-                        <!-- Modal delete -->
-                        <div class="modal fade" id="exampleModal_del_{{ client.id }}" tabindex="-1"
-                             aria-labelledby="exampleModalLabel_del_{{ client.id }}"
-                             aria-hidden="true">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h1 class="modal-title fs-5"
-                                            id="exampleModalLabel_del_{{ client.id }}">Deleting a
-                                            card</h1>
-                                        <button type="button" class="btn-close"
-                                                data-bs-dismiss="modal"
-                                                aria-label="Close"></button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <p class="text-start">This action can not be undone!!!</p>
-                                        <p class="text-start">If you delete a client, then all his orders will be
-                                            deleted along with him.</p>
-                                        <p class="text-start">
-                                            ENSURE THAT REMOVING THE CLIENT
-                                            ({{ client.first_name }} {{ client.last_name }}) WILL NOT CAUSE
-                                            PROBLEMS.</p>
-                                    </div>
-                                    <div class="modal-footer"
-                                         style="width: auto; display: flex; align-items: flex-start; justify-content: flex-start">
-                                        <form method="post" style="width: 100%;"
-                                              action={% url "client_delete" client.id %}>
-                                            {% csrf_token %}
-                                            <input class="form-control" type="text"
-                                                   value="{{ client.first_name }}-{{ client.last_name }}"
-                                                   aria-label="Disabled input example" disabled readonly
-                                                   style="margin-top: 15px">
-                                            <label for="subm" class="form-label" style="margin-top: 15px">Enter the
-                                                client's first and last name
-                                                to confirm deletion:</label>
-                                            <input class="form-control" type="text" name="client_f_l_name" id="subm"
-                                                   style="margin-top: 2px">
-                                            <button type="submit" class="btn btn-danger" style="margin-top: 15px">
-                                                Delete
-                                            </button>
-                                        </form>
+                            <!-- Modal delete -->
+                            <div class="modal fade" id="exampleModal_del_{{ client.id }}" tabindex="-1"
+                                 aria-labelledby="exampleModalLabel_del_{{ client.id }}"
+                                 aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h1 class="modal-title fs-5"
+                                                id="exampleModalLabel_del_{{ client.id }}">Deleting a
+                                                card</h1>
+                                            <button type="button" class="btn-close"
+                                                    data-bs-dismiss="modal"
+                                                    aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p class="text-start">This action can not be undone!!!</p>
+                                            <p class="text-start">If you delete a client, then all his orders will be
+                                                deleted along with him.</p>
+                                            <p class="text-start">
+                                                ENSURE THAT REMOVING THE CLIENT
+                                                ({{ client.first_name }} {{ client.last_name }}) WILL NOT CAUSE
+                                                PROBLEMS.</p>
+                                        </div>
+                                        <div class="modal-footer"
+                                             style="width: auto; display: flex; align-items: flex-start; justify-content: flex-start">
+
+                                            <form method="post" style="width: 100%;"
+                                                  action={% url "client_delete" client.id %}>
+                                                {% csrf_token %}
+                                                <input class="form-control" type="text"
+                                                       value="{{ client.first_name }}-{{ client.last_name }}"
+                                                       aria-label="Disabled input example" disabled readonly
+                                                       style="margin-top: 15px">
+                                                <label for="subm" class="form-label" style="margin-top: 15px">Enter the
+                                                    client's first and last name
+                                                    to confirm deletion:</label>
+                                                <input class="form-control" type="text" name="client_f_l_name" id="subm"
+                                                       style="margin-top: 2px">
+                                                <button type="submit" class="btn btn-danger" style="margin-top: 15px">
+                                                    Delete
+                                                </button>
+                                            </form>
+
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    {% endif %}
-                </td>
+                        {% endif %}
+                    </td>
+                {% endif %}
             </tr>
         {% endfor %}
         </tbody>

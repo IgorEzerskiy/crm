@@ -208,7 +208,6 @@ class OrderUpdateForm(ModelForm):
         self.fields['payment_amount'].widget.attrs.update({'class': 'form-control', 'min': 0})
 
 
-
 class PasswordChangeForm(ModelForm):
     class Meta:
         model = User
@@ -218,11 +217,8 @@ class PasswordChangeForm(ModelForm):
         super(PasswordChangeForm, self).__init__(*args, **kwargs)
         self.fields['password'].widget.attrs.update({'class': 'form-control'})
 
-
-
     def clean_password(self):
         pass
-
 
 
 class ProfileInfoUpdateForm(ModelForm):

@@ -24,15 +24,36 @@ class OrderListView(LoginRequiredMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['statuses'] = Status.objects.all()
-        context['orders'] = Order.objects.filter(
-            client__service_company=self.request.user.company
-        )
+        #context['orders'] = Order.objects.filter(
+        #    client__service_company=self.request.user.company
+        #)
         context['comments'] = Comment.objects.filter(
             author__company=self.request.user.company
         )
 
         return context
 
+    def get_queryset(self):
+        queryset = super().get_queryset()
+
+        if self.request.GET.get('orders_filter') == 'all':
+            return queryset.filter(
+                client__service_company=self.request.user.company
+            )
+        if self.request.GET.get('orders_filter') == 'active':
+            return queryset.filter(
+                client__service_company=self.request.user.company,
+                is_active_order=True
+            )
+        if self.request.GET.get('orders_filter') == 'hidden':
+            return queryset.filter(
+                client__service_company=self.request.user.company,
+                is_active_order=False
+            )
+        return queryset.filter(
+            client__service_company=self.request.user.company,
+            is_active_order=True
+        )
 
 # Auth
 
@@ -92,16 +113,16 @@ class ClientListView(LoginRequiredMixin, ListView):
     def get_queryset(self):
         queryset = super().get_queryset()
 
-        if self.request.GET.get('filter_all') == 'all':
+        if self.request.GET.get('clients_filter') == 'all':
             return queryset.filter(
                 service_company=self.request.user.company
             )
-        if self.request.GET.get('filter_active') == 'active':
+        if self.request.GET.get('clients_filter') == 'active':
             return queryset.filter(
                 service_company=self.request.user.company,
                 is_active_client=True
             )
-        if self.request.GET.get('filter_inactive') == 'inactive':
+        if self.request.GET.get('clients_filter') == 'inactive':
             return queryset.filter(
                 service_company=self.request.user.company,
                 is_active_client=False
@@ -119,6 +140,23 @@ class UserListView(AdminPassedMixin, LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         queryset = super().get_queryset()
+
+        if self.request.GET.get('users_filter') == 'all':
+            return queryset.filter(
+                company=self.request.user.company
+            )
+        if self.request.GET.get('users_filter') == 'admins':
+            return queryset.filter(
+                company=self.request.user.company,
+                is_company_admin=True
+            )
+        if self.request.GET.get('users_filter') == 'managers':
+            return queryset.filter(
+                company=self.request.user.company,
+
+            ).exclude(
+                is_company_admin=True
+            )
 
         return queryset.filter(
             company=self.request.user.company
