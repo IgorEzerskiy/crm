@@ -1,9 +1,12 @@
+from django.contrib.auth.hashers import make_password
+from django.contrib import messages
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.forms import CharField, ModelForm, forms, DateField, \
-    DateInput  # WHY form was imported????
+    DateInput, PasswordInput, EmailField  # WHY form was imported????
 from crm_app.models import User, Company, Client, Order, Comment
 from phonenumber_field.widgets import PhoneNumberPrefixWidget
 import re
+from django.core.validators import EmailValidator
 
 
 class CustomDateInput(DateInput):
@@ -209,19 +212,51 @@ class OrderUpdateForm(ModelForm):
 
 
 class PasswordChangeForm(ModelForm):
+    current_password = CharField(max_length=128, widget=PasswordInput())
+    confirm_password = CharField(max_length=128, widget=PasswordInput())
+
     class Meta:
         model = User
         fields = ['password']
 
     def __init__(self, *args, **kwargs):
+        if 'request' in kwargs:
+            self.request = kwargs.pop('request')
         super(PasswordChangeForm, self).__init__(*args, **kwargs)
         self.fields['password'].widget.attrs.update({'class': 'form-control'})
+        self.fields['current_password'].widget.attrs.update({'class': 'form-control'})
+        self.fields['confirm_password'].widget.attrs.update({'class': 'form-control'})
+
+    def clean_current_password(self):
+        current_password = self.cleaned_data.get('current_password')
+        if not self.request.user.check_password(current_password):
+            self.add_error(None, "Error")
+            messages.error(
+                self.request,
+                "Invalid current password"
+            )
+        return current_password
 
     def clean_password(self):
-        pass
+        password = self.cleaned_data.get('password')
+        confirm_password = self.cleaned_data.get('confirm_password')
+        if confirm_password != password:
+            self.add_error(None, "Error")
+            messages.error(
+                self.request,
+                "Password unconfirmed"
+            )
+        return password
+
+    def clean(self):
+        cleaned_data = super().clean()
+        password = make_password(cleaned_data.get('password'))
+        cleaned_data['password'] = password
 
 
 class ProfileInfoUpdateForm(ModelForm):
+    email = EmailField(validators=[EmailValidator(message="Enter correct email ")])
+
     class Meta:
         model = User
         fields = ['username', 'first_name', 'last_name', 'email']
@@ -232,3 +267,34 @@ class ProfileInfoUpdateForm(ModelForm):
         self.fields['first_name'].widget.attrs.update({'class': 'form-control'})
         self.fields['last_name'].widget.attrs.update({'class': 'form-control'})
         self.fields['email'].widget.attrs.update({'class': 'form-control'})
+
+    def clean_first_name(self):
+        first_name = self.cleaned_data.get('first_name')
+        if not first_name.isalpha():
+            raise forms.ValidationError('Only letter')
+
+        return first_name
+
+    def clean_last_name(self):
+        last_name = self.cleaned_data.get('last_name')
+        if not last_name.isalpha():
+            raise forms.ValidationError('Only letter')
+
+        return last_name
+
+    def clean_username(self):
+        username = self.cleaned_data.get('username')
+        user = User.objects.filter(
+            username=username
+        )
+        if user.exists():
+            if not user.first().is_active:
+                raise forms.ValidationError(
+                    'Wait until the administrator of your company confirms the request to add you.'
+                )
+        else:
+            raise forms.ValidationError(
+                'Invalid username.'
+            )
+
+        return username

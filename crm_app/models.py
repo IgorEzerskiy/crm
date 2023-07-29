@@ -37,6 +37,7 @@ class Status(models.Model):
 class User(AbstractUser):
     company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name='user')
     is_company_admin = models.BooleanField(default=False)
+    image = models.ImageField(upload_to='crm_app/static/profile_images/', max_length=100, null=True)
 
     def __str__(self):
         return self.username

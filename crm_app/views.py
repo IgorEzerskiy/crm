@@ -1,5 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.contrib.auth.views import LoginView, LogoutView
+from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeView
 from django.db import transaction
 from django.http import HttpResponseRedirect
 from django.views.generic import ListView, CreateView, UpdateView, DetailView, DeleteView
@@ -56,7 +56,7 @@ class OrderListView(LoginRequiredMixin, ListView):
         )
 
 # Auth
-
+PasswordChangeView
 
 class UserLoginView(LoginView):
     template_name = 'login.html'
@@ -475,7 +475,12 @@ class ProfileInfoUpdateView(UpdateView):
 
 
 class PasswordUpdateView(UpdateView):
-    queryset = User.objects.all()
+    template_name = 'profile.html'
+    model = User
     form_class = PasswordChangeForm
-    http_method_names = ['post']
     success_url = '/'
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs.update({"request": self.request})
+        return kwargs
