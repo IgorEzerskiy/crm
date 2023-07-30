@@ -239,6 +239,16 @@ class PasswordChangeForm(ModelForm):
 
     def clean_password(self):
         password = self.cleaned_data.get('password')
+        if len(password) < 8 or len(password) > 20 or ' ' in password:
+            self.add_error(None, "Error")
+            messages.error(
+                self.request,
+                "Invalid new password"
+            )
+        return password
+
+    def clean_confirm_password(self):
+        password = self.cleaned_data.get('password')
         confirm_password = self.cleaned_data.get('confirm_password')
         if confirm_password != password:
             self.add_error(None, "Error")
@@ -246,7 +256,7 @@ class PasswordChangeForm(ModelForm):
                 self.request,
                 "Password unconfirmed"
             )
-        return password
+        return confirm_password
 
     def clean(self):
         cleaned_data = super().clean()
