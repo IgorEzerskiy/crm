@@ -1,7 +1,7 @@
 {% extends 'index.html' %}
 {% load static %}
 {% block content %}
-    <form method="post" enctype="multipart/form-data" action="{% url 'update_profile' request.user.id %}">
+    <form method="post" enctype="multipart/form-data" >
         {% csrf_token %}
         <div class="container rounded  mt-5 mb-5">
             <div class="row" style="align-items: center; justify-content: center ">
@@ -24,17 +24,21 @@
 
                         <div class="row mt-2">
                             <div class="col-md-6"><label class="labels">Name</label>
+                                {{ form.first_name.errors }}
                                 <h3> {{ form.first_name }}  </h3>
                             </div>
                             <div class="col-md-6"><label class="labels">Surname</label>
+                                    {{ form.last_name.errors }}
                                 <h3> {{ form.last_name }}</h3>
                             </div>
                         </div>
                         <div class="row mt-2">
                             <div class="col-md-6"><label class="labels">Username</label>
+                                {{ form.username.errors }}
                                 <h3> {{ form.username }}</h3>
                             </div>
                             <div class="col-md-6"><label class="labels">Email</label>
+                                    {{ form.email.errors }}
                                 <h3> {{ form.email }}</h3>
                             </div>
                         </div>

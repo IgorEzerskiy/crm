@@ -272,6 +272,8 @@ class ProfileInfoUpdateForm(ModelForm):
         fields = ['username', 'first_name', 'last_name', 'email']
 
     def __init__(self, *args, **kwargs):
+        if 'request' in kwargs:
+            self.request = kwargs.pop('request')
         super(ProfileInfoUpdateForm, self).__init__(*args, **kwargs)
         self.fields['username'].widget.attrs.update({'class': 'form-control'})
         self.fields['first_name'].widget.attrs.update({'class': 'form-control'})

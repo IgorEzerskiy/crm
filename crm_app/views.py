@@ -470,9 +470,14 @@ class ProfileInfoUpdateView(UpdateView):
     form_class = ProfileInfoUpdateForm
     success_url = '/'
 
-    # def get_success_url(self):
-    #     url = super().get_success_url()
-    #     return url + f'/{self.request.user.id}'
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs.update({"request": self.request})
+        return kwargs
+
+    def get_success_url(self):
+        url = super().get_success_url()
+        return url + f'profile/{self.request.user.id}'
 
 
 class PasswordUpdateView(UpdateView):
