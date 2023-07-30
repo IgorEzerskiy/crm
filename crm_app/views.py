@@ -24,9 +24,6 @@ class OrderListView(LoginRequiredMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['statuses'] = Status.objects.all()
-        #context['orders'] = Order.objects.filter(
-        #    client__service_company=self.request.user.company
-        #)
         context['comments'] = Comment.objects.filter(
             author__company=self.request.user.company
         )
@@ -56,7 +53,7 @@ class OrderListView(LoginRequiredMixin, ListView):
         )
 
 # Auth
-PasswordChangeView
+
 
 class UserLoginView(LoginView):
     template_name = 'login.html'
@@ -472,6 +469,10 @@ class ProfileInfoUpdateView(UpdateView):
     queryset = User.objects.all()
     form_class = ProfileInfoUpdateForm
     success_url = '/'
+
+    # def get_success_url(self):
+    #     url = super().get_success_url()
+    #     return url + f'/{self.request.user.id}'
 
 
 class PasswordUpdateView(UpdateView):
