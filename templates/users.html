@@ -2,11 +2,10 @@
 {% block content %}
     <div style="display: flex;  justify-content: right; margin-right: 5px; margin-left: 5px; width: 100%">
         <form style="display: flex; flex-direction: column; align-items: center">
-            <div class="form-floating">
+            <div class="form-floating" style="width: 150px;">
                 <select class="form-select" id="floatingSelect" aria-label="Floating label select example"
                         name="users_filter">
-                    <option selected>Choose your filter</option>
-                    <option value="all">All users</option>
+                    <option selected value="all">All users</option>
                     <option value="admins">Admins</option>
                     <option value="managers">Managers</option>
                 </select>
