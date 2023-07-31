@@ -2,7 +2,7 @@ from django.contrib.auth.hashers import make_password
 from django.contrib import messages
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.forms import CharField, ModelForm, forms, DateField, \
-    DateInput, PasswordInput, EmailField  # WHY form was imported????
+    DateInput, PasswordInput, EmailField, ImageField, FileInput  # WHY form was imported????
 from crm_app.models import User, Company, Client, Order, Comment
 from phonenumber_field.widgets import PhoneNumberPrefixWidget
 import re
@@ -265,7 +265,17 @@ class PasswordChangeForm(ModelForm):
 
 
 class ProfileInfoUpdateForm(ModelForm):
-    email = EmailField(validators=[EmailValidator(message="Enter correct email ")])
+    email = EmailField(validators=[
+            EmailValidator(message="Enter correct email")
+        ]
+    )
+    image = ImageField(
+        widget=FileInput(
+            attrs={"id": "image_field",
+                   "style": "width : 250px ; margin-top: 21px",
+                   }
+        )
+    )
 
     class Meta:
         model = User
