@@ -290,6 +290,10 @@ class CompanyUpdateView(AdminPassedMixin, LoginRequiredMixin, UpdateView):
             name=self.request.user.company.name
         )
 
+    def get_success_url(self):
+        url = super().get_success_url()
+        return url + f'profile/{self.request.user.id}'
+
     def form_valid(self, form):
         messages.success(
             self.request,
