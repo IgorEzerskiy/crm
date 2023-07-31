@@ -2,7 +2,7 @@ from django.contrib.auth.hashers import make_password
 from django.contrib import messages
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.forms import CharField, ModelForm, forms, DateField, \
-    DateInput, PasswordInput, EmailField, ImageField, FileInput  # WHY form was imported????
+    DateInput, PasswordInput, EmailField, ImageField, FileInput
 from crm_app.models import User, Company, Client, Order, Comment
 from phonenumber_field.widgets import PhoneNumberPrefixWidget
 import re

@@ -25,27 +25,33 @@
                 <li class="nav-item">
                     <a class="nav-link active" aria-current="page" href="{% url 'new_order' %}">New order</a>
                 </li>
-                <li class="nav-item dropdown " data-bs-theme="dark">
-                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-                       aria-expanded="false">
-                        Admin tools
-                    </a>
-                    <ul class="dropdown-menu">
-                        {% if request.user.is_company_admin %}
+                {% if request.user.is_company_admin %}
+                    <li class="nav-item dropdown " data-bs-theme="dark">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                           aria-expanded="false">
+                            Admin tools
+                        </a>
+                        <ul class="dropdown-menu">
+
                             <li><a class="dropdown-item" href="{% url 'users' %}">Users</a></li>
                             <li><a class="dropdown-item" href="{% url 'users_connections_requests' %}">Connection
                                 requests</a></li>
                             <li>
                                 <hr class="dropdown-divider">
                             </li>
-{##}
-{#                            <li><a class="dropdown-item" href="{% url 'edit_company' user.company.id %}">Update#}
-{#                                company</a>#}
-{#                            </li>#}
-                        {% endif %}
-                        <li><a class="dropdown-item" href="{% url 'clients' %}">Update client</a></li>
-                    </ul>
-                </li>
+                            {##}
+                            {#                            <li><a class="dropdown-item" href="{% url 'edit_company' user.company.id %}">Update#}
+                            {#                                company</a>#}
+                            {#                            </li>#}
+
+                            <li><a class="dropdown-item" href="{% url 'clients' %}">Update client</a></li>
+                        </ul>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{% url 'clients' %}">Update client</a>
+                    </li>
+                {% endif %}
             </ul>
             <a class="navbar-brand" href="{% url 'profile' user.id %}">Profile: {{ request.user.username }}</a>
             <form class="d-flex" method="post" action={% url 'logout' %}>
