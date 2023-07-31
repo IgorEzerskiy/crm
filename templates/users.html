@@ -41,12 +41,12 @@
                 <th scope="row">{{ forloop.counter }}</th>
                 {% if user.image %}
                     <th>
-                        <img style="width: 40px; height: 40px; border-radius: 50%; box-shadow:0 10px 16px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19)"
+                        <img style="width: 40px; height: 40px; border-radius: 50%; box-shadow:0 3px 5px 0 rgba(0,0,0,0.2),0 4px 6px 0 rgba(0,0,0,0.19)"
                              src="{{ user.image.url }}">
                     </th>
                 {% else %}
                     <th>
-                        <img style="width: 40px; height: 40px; border-radius: 50%; box-shadow:0 10px 16px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19)"
+                        <img style="width: 40px; height: 40px; border-radius: 50%; box-shadow:0 3px 5px 0 rgba(0,0,0,0.2),0 4px 6px 0 rgba(0,0,0,0.19)"
                              src="{% static 'profile_images/avatar_placeholder.jpg' %}">
                     </th>
                 {% endif %}
