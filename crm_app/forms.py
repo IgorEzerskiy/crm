@@ -269,7 +269,7 @@ class ProfileInfoUpdateForm(ModelForm):
 
     class Meta:
         model = User
-        fields = ['username', 'first_name', 'last_name', 'email']
+        fields = ['username', 'first_name', 'last_name', 'email', 'image']
 
     def __init__(self, *args, **kwargs):
         if 'request' in kwargs:
@@ -279,6 +279,7 @@ class ProfileInfoUpdateForm(ModelForm):
         self.fields['first_name'].widget.attrs.update({'class': 'form-control'})
         self.fields['last_name'].widget.attrs.update({'class': 'form-control'})
         self.fields['email'].widget.attrs.update({'class': 'form-control'})
+        self.fields['image'].widget.attrs.update({'class': 'form-control'})
 
     def clean_first_name(self):
         first_name = self.cleaned_data.get('first_name')

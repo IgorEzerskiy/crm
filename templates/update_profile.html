@@ -7,12 +7,18 @@
             <div class="row" style="align-items: center; justify-content: center ">
                 <div class="col-md-3 border-right">
                     <div class="d-flex flex-column align-items-center text-center p-3 py-5">
-                        <img class="rounded-circle mt-5"
-                             src="https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg"
-                        width="150px">
+                       {% if user.image %}
+                    <img class="rounded mt-5"
+                         width="150px"
+                         src= "{{ user.image.url }}" >
+                    {% else %}
+                        <img class="rounded mt-5"
+                         width="150px"
+                         src= "{% static 'profile_images/avatar_placeholder.jpg' %}">
+                    {% endif %}
 
                         {#   "https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg">#}
-                        {#                        <span class="font-weight-bold"><label class="labels">Username</label>{{ form.username }}</span>#}
+                                                {{ form.image }}
                         {#                        <span class="text-white-50"><label class="labels">Email</label>{{ form.email }}</span>#}
                     </div>
                 </div>
