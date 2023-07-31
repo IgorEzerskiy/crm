@@ -490,3 +490,26 @@ class PasswordUpdateView(UpdateView):
         kwargs = super().get_form_kwargs()
         kwargs.update({"request": self.request})
         return kwargs
+
+
+class ClientRecoveryUpdateView(UpdateView):
+    model = Client
+    success_url = '/clients'
+    fields = ()
+
+    def form_valid(self, form):
+        orders = Order.objects.filter(
+            client__id=self.object.id,
+            manager__company=self.request.user.company
+        )
+
+        with transaction.atomic():
+            for order in orders:
+                order.is_active_order = True
+                order.save()
+            self.object.is_active_client = True
+            self.object.save()
+
+        return super().form_valid(
+            form=form
+        )

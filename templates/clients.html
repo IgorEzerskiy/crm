@@ -106,6 +106,16 @@
                             </div>
                         {% endif %}
                     </td>
+                {% else %}
+                    <td>
+                        <form method="post"
+                              action={% url "recovery-client" client.id %}>
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-outline-success">
+                                Recovery client
+                            </button>
+                        </form>
+                    </td>
                 {% endif %}
             </tr>
         {% endfor %}
