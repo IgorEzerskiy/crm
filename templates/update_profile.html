@@ -1,24 +1,28 @@
 {% extends 'index.html' %}
 {% load static %}
 {% block content %}
-    <form method="post" enctype="multipart/form-data" >
+    <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         <div class="container rounded  mt-5 mb-5">
             <div class="row" style="align-items: center; justify-content: center ">
                 <div class="col-md-3 border-right">
                     <div class="d-flex flex-column align-items-center text-center p-3 py-5">
-                       {% if user.image %}
-                    <img class="rounded mt-5"
-                         width="150px"
-                         src= "{{ user.image.url }}" >
-                    {% else %}
-                        <img class="rounded mt-5"
-                         width="150px"
-                         src= "{% static 'profile_images/avatar_placeholder.jpg' %}">
-                    {% endif %}
+                        {% if user.image %}
+                            <img class="rounded mt-5"
+                                 width="250px"
+                                 height="250px"
+                                 style="box-shadow:0 10px 16px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19)"
+                                 src="{{ user.image.url }}">
+                        {% else %}
+                            <img class="rounded mt-5"
+                                 width="250px"
+                                 height="250px"
+                                 style="box-shadow:0 10px 16px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19)"
+                                 src="{% static 'profile_images/avatar_placeholder.jpg' %}">
+                        {% endif %}
 
                         {#   "https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg">#}
-                                                {{ form.image }}
+                        {{ form.image }}
                         {#                        <span class="text-white-50"><label class="labels">Email</label>{{ form.email }}</span>#}
                     </div>
                 </div>
@@ -34,7 +38,7 @@
                                 <h3> {{ form.first_name }}  </h3>
                             </div>
                             <div class="col-md-6"><label class="labels">Surname</label>
-                                    {{ form.last_name.errors }}
+                                {{ form.last_name.errors }}
                                 <h3> {{ form.last_name }}</h3>
                             </div>
                         </div>
@@ -44,7 +48,7 @@
                                 <h3> {{ form.username }}</h3>
                             </div>
                             <div class="col-md-6"><label class="labels">Email</label>
-                                    {{ form.email.errors }}
+                                {{ form.email.errors }}
                                 <h3> {{ form.email }}</h3>
                             </div>
                         </div>

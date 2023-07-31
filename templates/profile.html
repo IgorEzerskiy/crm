@@ -6,16 +6,20 @@
             <div class="col-md-3 border-right">
                 <div class="d-flex flex-column align-items-center text-center p-3 py-5">
 
-                     {% if user.image %}
-                    <img class="rounded mt-5"
-                         width="150px"
-                         src= "{{user.image.url}}" >
+                    {% if user.image %}
+                        <img class="rounded mt-5"
+                             width="250px"
+                             height="250px"
+                             style="box-shadow:0 10px 16px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19)"
+                             src="{{ user.image.url }}">
                     {% else %}
                         <img class="rounded mt-5"
-                         width="150px"
-                         src= "{% static 'profile_images/avatar_placeholder.jpg' %}">
+                             width="250px"
+                             height="250px"
+                             style="box-shadow:0 10px 16px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19)"
+                             src="{% static 'profile_images/avatar_placeholder.jpg' %}">
                     {% endif %}
-{#                    "https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg"#}
+                    {#                    "https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg"#}
                     <span class="font-weight-bold">{{ request.user.username }}</span>
                     <span class="text-white-50">{{ request.user.email }}</span>
                 </div>
@@ -68,24 +72,24 @@
                                         <div class="modal-body">
                                             <div class="form-group">
                                                 <label for="inputPasswordOld">Current Password</label>
-                                                {{ form.current_password}}
-{#                                                <input type="password" name="current_password" class="form-control" id="inputPasswordOld"#}
-{#                                                       required="">#}
+                                                {{ form.current_password }}
+                                                {#                                                <input type="password" name="current_password" class="form-control" id="inputPasswordOld"#}
+                                                {#                                                       required="">#}
                                             </div>
                                             <div class="form-group">
                                                 <label for="inputPasswordNew">New Password</label>
-                                                {{ form.password}}
-{#                                                <input type="password" class="form-control" id="inputPasswordNew"#}
-{#                                                       required="">#}
+                                                {{ form.password }}
+                                                {#                                                <input type="password" class="form-control" id="inputPasswordNew"#}
+                                                {#                                                       required="">#}
                                                 <span class="form-text small text-muted">
                                             The password must be 8-20 characters, and must <em>not</em> contain spaces.
                                         </span>
                                             </div>
                                             <div class="form-group">
                                                 <label for="inputPasswordNewVerify">Confirm new password</label>
-                                                {{ form.confirm_password}}
-{#                                                <input type="password" name='confirmation' class="form-control" id="inputPasswordNewVerify"#}
-{#                                                       required="">#}
+                                                {{ form.confirm_password }}
+                                                {#                                                <input type="password" name='confirmation' class="form-control" id="inputPasswordNewVerify"#}
+                                                {#                                                       required="">#}
                                                 <span class="form-text small text-muted">
                                             To confirm, type the new password again.
                                         </span>
@@ -112,7 +116,7 @@
                         <h4 class="text-right">Company Info</h4>
                     </div>
                     <div class="row mt-2">
-                        <div class="col-md-6" ><label class="labels">Phone</label>
+                        <div class="col-md-6"><label class="labels">Phone</label>
                             <h3 style="font-family: 'Courier', monospace;"> {{ request.user.company.telephone }}</h3>
                         </div>
                         <div class="row mt-3">
