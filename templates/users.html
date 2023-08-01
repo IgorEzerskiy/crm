@@ -62,7 +62,7 @@
                 {% if request.user.is_company_admin %}
                     <td>
                         <a class="btn btn-outline-primary" style="width: 150px;"
-                           href="#">Edit
+                           href="{% url 'update_users' user.id %}">Edit
                         </a>
                     </td>
                 {% endif %}

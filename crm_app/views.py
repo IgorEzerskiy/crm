@@ -536,3 +536,10 @@ class ClientRecoveryUpdateView(UpdateView):
         return super().form_valid(
             form=form
         )
+
+
+class UsersUpdateView(UpdateView):
+    template_name = 'users_update.html'
+    queryset = User.objects.all()
+    form_class = ProfileInfoUpdateForm
+    success_url = '/'
