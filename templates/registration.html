@@ -2,14 +2,73 @@
 {% load static %}
 
 {% block content %}
-<div class="container-lg">
-<div class="container-sm" style="margin-top: 10px; width: 500px; color: white">
-    <form method="post" enctype="multipart/form-data" class="row g-3">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <input type="submit" value="Registration" class="btn btn-outline-success" style="width: 150px;">
-    </form>
-    <a class="nav-link" style="margin-top: 15px" href={% url 'login' %}>Login</a>
-</div>
-</div>
+    <div class="container-lg">
+        <div class="container-sm" style="margin-top: 10px; width: 500px; color: white">
+            <form method="post" enctype="multipart/form-data" class="row g-3">
+                {% csrf_token %}
+
+                <label class="labels">Your first name</label>
+                {{ form.first_name }}
+                <label class="labels">Your last name</label>
+                {{ form.last_name }}
+                <button type="button" class="btn btn-danger" data-bs-toggle="modal"
+                        data-bs-target="#exampleModal_reg">
+                    Next
+                </button>
+{#          !!!!!!!!!!!!!!!    ЕСЛИ не нравится  то можешь убрать нахуй эти моделы, реквест формируется нормально со всеми полями      #}!!!!!!!!!!!!!
+                <!-- First modal dialog -->
+                <div class="modal fade" id="exampleModal_reg" aria-hidden="true"
+                     aria-labelledby="exampleModalToggleLabel_reg" tabindex="-1">
+                    <div class="modal-dialog ">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalToggleLabel_reg">Second step</h5>
+                                <button type="button" class="btn-close" data-mdb-dismiss="modal"
+                                        aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <label class="labels">Username</label>
+                                {{ form.username }}
+                                <label class="labels">Password</label>
+                                {{ form.password1 }}
+                                <label class="labels">Confirm password</label>
+                                {{ form.password2 }}
+                            </div>
+                            <div class="modal-footer">
+
+                                <button type="button" class="btn btn-danger" data-bs-toggle="modal"
+                                        data-bs-target="#exampleModal_reg2">
+                                    Next step
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Second modal dialog -->
+                <div class="modal fade" id="exampleModal_reg2" aria-hidden="true"
+                     aria-labelledby="exampleModalToggleLabel_reg2" tabindex="-1">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalToggleLabel_reg2">Third step</h5>
+                                <button type="button" class="btn-close" data-mdb-dismiss="modal"
+                                        aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <label class="labels">Company</label>
+                                {{ form.company }}
+                                <label class="labels">Check company</label>
+                                {{ form.check_company }}
+                            </div>
+                            <div class="modal-footer">
+                                <input type="submit" value="Registration" class="btn btn-outline-success"
+                                       style="width: 150px;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <a class="nav-link" style="margin-top: 15px" href={% url 'login' %}>Login</a>
+        </div>
+    </div>
 {% endblock %}
