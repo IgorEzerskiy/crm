@@ -487,14 +487,16 @@ class ProfileInfoUpdateView(UpdateView):
 
     def form_valid(self, form):
         obj = form.save(commit=False)
+        new_img = form.cleaned_data.get('image')
+        current_img = None if self.request.user.image.name == '' else self.request.user.image
 
-        if self.request.user.image and not form.fields.get('image'):
+        if new_img == current_img:
             return super().form_valid(
                 form=form
             )
-        if self.request.user.image:
-            old_img = self.request.user.image.path
-            os.remove(old_img)
+        else:
+            if current_img:
+                os.remove(current_img.path)
             obj.save()
         return super().form_valid(
             form=form
