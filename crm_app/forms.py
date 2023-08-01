@@ -2,7 +2,7 @@ from django.contrib.auth.hashers import make_password
 from django.contrib import messages
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.forms import CharField, ModelForm, forms, DateField, \
-    DateInput, PasswordInput, EmailField, ImageField, FileInput
+    DateInput, PasswordInput, EmailField, ImageField, FileInput, BooleanField
 from crm_app.models import User, Company, Client, Order, Comment
 from phonenumber_field.widgets import PhoneNumberPrefixWidget
 import re
@@ -17,6 +17,13 @@ class UserCreateForm(UserCreationForm):
     company = CharField(
         max_length=100
     )
+    first_name = CharField(required=True,
+                           max_length=150)
+    last_name = CharField(required=True,
+                          max_length=150)
+    check_company = BooleanField(
+        required=False
+    )
 
     class Meta:
         model = User
@@ -25,9 +32,12 @@ class UserCreateForm(UserCreationForm):
     def __init__(self, *args, **kwargs):
         super(UserCreateForm, self).__init__(*args, **kwargs)
         self.fields['username'].widget.attrs.update({'class': 'form-control'})
+        self.fields['first_name'].widget.attrs.update({'class': 'form-control'})
+        self.fields['last_name'].widget.attrs.update({'class': 'form-control'})
         self.fields['company'].widget.attrs.update({'class': 'form-control'})
         self.fields['password1'].widget.attrs.update({'class': 'form-control'})
         self.fields['password2'].widget.attrs.update({'class': 'form-control'})
+        self.fields['check_company'].widget.attrs.update({'class': 'form-check-input'})
 
 
 class UserLoginForm(AuthenticationForm):
