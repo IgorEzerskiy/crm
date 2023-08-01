@@ -8,6 +8,7 @@ from crm_app.forms import UserLoginForm, UserCreateForm, ClientModelForm, Compan
     OrderUpdateForm, PasswordChangeForm, ProfileInfoUpdateForm
 from crm_app.models import Order, Client, Company, User, Status, Comment
 from django.contrib import messages
+import os
 
 
 # Create your views here.
@@ -51,6 +52,7 @@ class OrderListView(LoginRequiredMixin, ListView):
             client__service_company=self.request.user.company,
             is_active_order=True
         )
+
 
 # Auth
 
@@ -482,6 +484,21 @@ class ProfileInfoUpdateView(UpdateView):
     def get_success_url(self):
         url = super().get_success_url()
         return url + f'profile/{self.request.user.id}'
+
+    def form_valid(self, form):
+        obj = form.save(commit=False)
+
+        if self.request.user.image and not form.fields.get('image'):
+            return super().form_valid(
+                form=form
+            )
+        if self.request.user.image:
+            old_img = self.request.user.image.path
+            os.remove(old_img)
+            obj.save()
+        return super().form_valid(
+            form=form
+        )
 
 
 class PasswordUpdateView(UpdateView):
