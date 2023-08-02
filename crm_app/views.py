@@ -4,6 +4,7 @@ from django.db import transaction
 from django.http import HttpResponseRedirect
 from django.views.generic import ListView, CreateView, UpdateView, DetailView, DeleteView
 from django.forms import ModelChoiceField
+from django import forms
 from crm_app.forms import UserLoginForm, UserCreateForm, ClientModelForm, CompanyUpdateForm, OrderCreateForm, \
     OrderUpdateForm, PasswordChangeForm, UserInfoUpdateForm
 from crm_app.models import Order, Client, Company, User, Status, Comment
@@ -75,29 +76,43 @@ class UserCreateView(CreateView):
     success_url = '/login'
 
     def form_valid(self, form):
-        user = form.save(
+        new_user_obj = form.save(
             commit=False
         )
-        company = Company.objects.filter(
-            name=self.request.POST.get('company')
-        )
-        if company.exists():
-            user.company = company.first()
-            user.is_active = False
-            user.save()
-        else:
-            username = user.username
-            with transaction.atomic():
-                company = Company.objects.create(
+        if not self.request.POST.get('create_company'):
+            try:
+                company = Company.objects.get(
                     name=self.request.POST.get('company')
                 )
-                user.company = company
-                user.is_company_admin = True
-                user.save()
-            messages.success(
-                self.request,
-                f'HI, {username}. You created a new company called: {company.name}.'
-            )
+                new_user_obj.company = company
+                new_user_obj.is_active = False
+                new_user_obj.save()
+                messages.success(
+                    self.request,
+                    f'HI, {new_user_obj.username}. You have been added to the company {company.name}. '
+                    f'Wait for company administrator confirmation.'
+                )
+            except Company.DoesNotExist:
+                form.add_error('company', 'Company does not exist.')
+                return self.form_invalid(form=form)
+        else:
+            if not Company.objects.get(name=self.request.POST.get('company')):
+                username = new_user_obj.username
+                with transaction.atomic():
+                    company = Company.objects.create(
+                        name=self.request.POST.get('company')
+                    )
+                    new_user_obj.company = company
+                    new_user_obj.is_company_admin = True
+                    new_user_obj.save()
+                messages.success(
+                    self.request,
+                    f'HI, {username}. You created a new company called: {company.name}.'
+                )
+            else:
+                form.add_error('company', 'Company already exist.')
+                return self.form_invalid(form=form)
+
         return super().form_valid(
             form=form
         )

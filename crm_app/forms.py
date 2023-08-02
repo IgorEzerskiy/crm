@@ -21,13 +21,16 @@ class UserCreateForm(UserCreationForm):
                            max_length=150)
     last_name = CharField(required=True,
                           max_length=150)
-    check_company = BooleanField(
+    create_company = BooleanField(
         required=False
     )
 
     class Meta:
         model = User
-        fields = ('username',)
+        fields = ('username',
+                  'first_name',
+                  'last_name'
+        )
 
     def __init__(self, *args, **kwargs):
         super(UserCreateForm, self).__init__(*args, **kwargs)
@@ -37,7 +40,7 @@ class UserCreateForm(UserCreationForm):
         self.fields['company'].widget.attrs.update({'class': 'form-control'})
         self.fields['password1'].widget.attrs.update({'class': 'form-control'})
         self.fields['password2'].widget.attrs.update({'class': 'form-control'})
-        self.fields['check_company'].widget.attrs.update({'class': 'form-check-input'})
+        self.fields['create_company'].widget.attrs.update({'class': 'form-check-input'})
 
 
 class UserLoginForm(AuthenticationForm):
@@ -289,7 +292,12 @@ class UserInfoUpdateForm(ModelForm):
 
     class Meta:
         model = User
-        fields = ['username', 'first_name', 'last_name', 'email', 'image']
+        fields = ['username',
+                  'first_name',
+                  'last_name',
+                  'email',
+                  'image'
+        ]
 
     def __init__(self, *args, **kwargs):
         if 'request' in kwargs:
