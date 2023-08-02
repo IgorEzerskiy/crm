@@ -547,8 +547,8 @@ class UsersUpdateView(UpdateView):
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
         kwargs.update({
-                        "request": self.request,
-                        "user_id": self.kwargs['pk']
+            "request": self.request,
+            "user_id": self.kwargs['pk']
         })
         return kwargs
 
