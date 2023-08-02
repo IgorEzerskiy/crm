@@ -274,7 +274,7 @@ class PasswordChangeForm(ModelForm):
         cleaned_data['password'] = password
 
 
-class ProfileInfoUpdateForm(ModelForm):
+class UserInfoUpdateForm(ModelForm):
     email = EmailField(validators=[
             EmailValidator(message="Enter correct email")
         ], required=False
@@ -294,8 +294,12 @@ class ProfileInfoUpdateForm(ModelForm):
     def __init__(self, *args, **kwargs):
         if 'request' in kwargs:
             self.request = kwargs.pop('request')
-        super(ProfileInfoUpdateForm, self).__init__(*args, **kwargs)
+        if 'user_id' in kwargs:
+            self.user_id = kwargs.pop('user_id')
+        super(UserInfoUpdateForm, self).__init__(*args, **kwargs)
         self.fields['username'].widget.attrs.update({'class': 'form-control'})
+        if hasattr(self, 'user_id'):
+            self.fields.pop("username")
         self.fields['first_name'].widget.attrs.update({'class': 'form-control'})
         self.fields['last_name'].widget.attrs.update({'class': 'form-control'})
         self.fields['email'].widget.attrs.update({'class': 'form-control'})

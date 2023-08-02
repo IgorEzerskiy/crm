@@ -5,7 +5,7 @@ from django.http import HttpResponseRedirect
 from django.views.generic import ListView, CreateView, UpdateView, DetailView, DeleteView
 from django.forms import ModelChoiceField
 from crm_app.forms import UserLoginForm, UserCreateForm, ClientModelForm, CompanyUpdateForm, OrderCreateForm, \
-    OrderUpdateForm, PasswordChangeForm, ProfileInfoUpdateForm
+    OrderUpdateForm, PasswordChangeForm, UserInfoUpdateForm
 from crm_app.models import Order, Client, Company, User, Status, Comment
 from django.contrib import messages
 import os
@@ -473,7 +473,7 @@ class ClientDeleteView(AdminPassedMixin, LoginRequiredMixin, DeleteView):
 class ProfileInfoUpdateView(UpdateView):
     template_name = 'update_profile.html'
     queryset = User.objects.all()
-    form_class = ProfileInfoUpdateForm
+    form_class = UserInfoUpdateForm
     success_url = '/'
 
     def get_form_kwargs(self):
@@ -541,5 +541,31 @@ class ClientRecoveryUpdateView(UpdateView):
 class UsersUpdateView(UpdateView):
     template_name = 'users_update.html'
     queryset = User.objects.all()
-    form_class = ProfileInfoUpdateForm
-    success_url = '/'
+    form_class = UserInfoUpdateForm
+    success_url = '/users/'
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs.update({
+                        "request": self.request,
+                        "user_id": self.kwargs['pk']
+        })
+        return kwargs
+
+    def form_valid(self, form):
+        obj = form.save(commit=False)
+        current_user = User.objects.get(id=self.kwargs['pk'])
+        new_img = form.cleaned_data.get('image')
+        current_img = None if current_user.image.name == '' else current_user.image
+
+        if new_img == current_img:
+            return super().form_valid(
+                form=form
+            )
+        else:
+            if current_img:
+                os.remove(current_img.path)
+            obj.save()
+        return super().form_valid(
+            form=form
+        )
