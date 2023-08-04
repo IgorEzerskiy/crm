@@ -1,6 +1,7 @@
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeView
 from django.db import transaction
+from django.db.models import Count
 from django.http import HttpResponseRedirect
 from django.views.generic import ListView, CreateView, UpdateView, DetailView, DeleteView
 from django.forms import ModelChoiceField
@@ -158,11 +159,15 @@ class UserListView(AdminPassedMixin, LoginRequiredMixin, ListView):
         if self.request.GET.get('users_filter') == 'all':
             return queryset.filter(
                 company=self.request.user.company
+            ).annotate(
+                order_num=Count('order')
             )
         if self.request.GET.get('users_filter') == 'admins':
             return queryset.filter(
                 company=self.request.user.company,
                 is_company_admin=True
+            ).annotate(
+                order_num=Count('order')
             )
         if self.request.GET.get('users_filter') == 'managers':
             return queryset.filter(
@@ -170,11 +175,49 @@ class UserListView(AdminPassedMixin, LoginRequiredMixin, ListView):
 
             ).exclude(
                 is_company_admin=True
+            ).annotate(
+                order_num=Count('order')
             )
 
         return queryset.filter(
             company=self.request.user.company
+        ).annotate(
+            order_num=Count('order')
         )
+
+
+class UserDeleteView(AdminPassedMixin, LoginRequiredMixin, DeleteView):
+    login_url = 'login/'
+    success_url = '/users'
+    queryset = User.objects.all()
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+
+        return queryset.filter(
+            company=self.request.user.company
+        )
+
+    def form_valid(self, form):
+        user = self.get_object()
+        username = self.request.POST.get('user_name')
+
+        current_img = None if user.image.name == '' else user.image
+
+        if username == user.username:
+            if current_img:
+                os.remove(current_img.path)
+            user.delete()
+            messages.success(
+                self.request,
+                "Manager was delete successfully."
+            )
+        else:
+            messages.error(
+                self.request,
+                "Error deleting manager. The manager's username entered is not correct."
+            )
+        return HttpResponseRedirect(self.get_success_url())
 
 
 class UserConnectionRequestsListView(AdminPassedMixin, LoginRequiredMixin, ListView):
@@ -386,6 +429,21 @@ class OrderUpdateView(LoginRequiredMixin, UpdateView):
     form_class = OrderUpdateForm
     success_url = '/'
     login_url = '/login'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        managers = User.objects.filter(
+            company=self.request.user.company
+        )
+        context['form'].fields['manager'] = ModelChoiceField(
+            queryset=managers
+        )
+        context['form'].fields['manager'].widget.attrs.update(
+            {'class': 'form-control'}
+        )
+
+        return context
 
     def get_queryset(self):
         queryset = super().get_queryset()

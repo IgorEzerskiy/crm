@@ -32,6 +32,7 @@
             <th scope="col">Position</th>
             {% if request.user.is_company_admin %}
                 <th scope="col"></th>
+                <th scope="col"></th>
             {% endif %}
         </tr>
         </thead>
@@ -66,6 +67,86 @@
                         </a>
                     </td>
                 {% endif %}
+                <td>
+                    {% if user.order_num == 0 %}
+                        <button type="button" class="btn btn-danger" data-bs-toggle="modal"
+                                data-bs-target="#exampleModal_del_{{ user.id }}">
+                            Delete
+                        </button>
+
+                        <!-- Modal delete -->
+                        <div class="modal fade" id="exampleModal_del_{{ user.id }}" tabindex="-1"
+                             aria-labelledby="exampleModalLabel_del_{{ user.id }}"
+                             aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h1 class="modal-title fs-5"
+                                            id="exampleModalLabel_del_{{ user.id }}">Deleting a
+                                            manager</h1>
+                                        <button type="button" class="btn-close"
+                                                data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p class="text-start">This action can not be undone!!!</p>
+                                        <p class="text-start">
+                                            ENSURE THAT REMOVING THE MANAGER
+                                            ({{ user.username }}) WILL NOT CAUSE
+                                            PROBLEMS.</p>
+                                    </div>
+                                    <div class="modal-footer"
+                                         style="width: auto; display: flex; align-items: flex-start; justify-content: flex-start">
+
+                                        <form method="post" style="width: 100%;" action={% url "user_delete" user.id %}>
+                                            {% csrf_token %}
+                                            <input class="form-control" type="text"
+                                                   value="{{ user.username }}"
+                                                   aria-label="Disabled input example" disabled readonly
+                                                   style="margin-top: 15px">
+                                            <label for="subm" class="form-label" style="margin-top: 15px">Enter the
+                                                manager's username
+                                                to confirm deletion:</label>
+                                            <input class="form-control" type="text" name="user_name" id="subm"
+                                                   style="margin-top: 2px">
+                                            <button type="submit" class="btn btn-danger" style="margin-top: 15px">
+                                                Delete
+                                            </button>
+                                        </form>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% else %}
+                        <button type="button" class="btn btn-warning" data-bs-toggle="modal"
+                                data-bs-target="#exampleModal_del_{{ user.id }}">
+                            Delete
+                        </button>
+
+                        <!-- Modal delete -->
+                        <div class="modal fade" id="exampleModal_del_{{ user.id }}" tabindex="-1"
+                             aria-labelledby="exampleModalLabel_del_{{ user.id }}"
+                             aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h1 class="modal-title fs-5"
+                                            id="exampleModalLabel_del_{{ user.id }}">Attention</h1>
+                                        <button type="button" class="btn-close"
+                                                data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p class="text-start">
+                                            You cannot delete this manager because this manager has {{ user.order_num }} active orders.
+                                            Transfer orders to another manager and you can delete the manager.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                </td>
             </tr>
         {% endfor %}
         </tbody>

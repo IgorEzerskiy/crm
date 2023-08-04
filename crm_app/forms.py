@@ -211,7 +211,8 @@ class OrderUpdateForm(ModelForm):
                   'start_date',
                   'due_date',
                   'payment_amount',
-                  'status'
+                  'status',
+                  'manager'
                   )
 
     def __init__(self, *args, **kwargs):
@@ -221,6 +222,7 @@ class OrderUpdateForm(ModelForm):
         self.fields['start_date'].widget.attrs.update({'class': 'form-control'})
         self.fields['due_date'].widget.attrs.update({'class': 'form-control'})
         self.fields['status'].widget.attrs.update({'class': 'form-control'})
+        self.fields['manager'].widget.attrs.update({'class': 'form-control'})
         self.fields['payment_amount'].widget.attrs.update({'class': 'form-control', 'min': 0})
 
 

@@ -3,7 +3,7 @@ from django.conf.urls.static import static
 from crm_app.views import OrderListView, UserLoginView, UserLogoutView, UserCreateView, ClientCreateView, \
     ClientListView, ClientUpdateView, CompanyUpdateView, UserListView, UserDetailView, UserConnectionRequestsListView, \
     OrderCreateView, CommentCreateView, OrderUpdateView, ClientDeleteView, ProfileInfoUpdateView, PasswordUpdateView, \
-    ClientRecoveryUpdateView, UsersUpdateView
+    ClientRecoveryUpdateView, UsersUpdateView, UserDeleteView
 from CRM import settings
 
 urlpatterns = [
@@ -27,4 +27,5 @@ urlpatterns = [
     path('change-password/<int:pk>', PasswordUpdateView.as_view(), name='change_password'),
     path('recovery-client/<int:pk>', ClientRecoveryUpdateView.as_view(), name='recovery-client'),
     path('update-users/<int:pk>', UsersUpdateView.as_view(), name='update_users'),
+    path('user-delete/<int:pk>', UserDeleteView.as_view(), name='user_delete'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
