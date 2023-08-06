@@ -5,7 +5,7 @@ from django.db.models import Count
 from django.http import HttpResponseRedirect
 from django.views.generic import ListView, CreateView, UpdateView, DetailView, DeleteView
 from django.forms import ModelChoiceField
-from django import forms
+
 from crm_app.forms import UserLoginForm, UserCreateForm, ClientModelForm, CompanyUpdateForm, OrderCreateForm, \
     OrderUpdateForm, PasswordChangeForm, UserInfoUpdateForm
 from crm_app.models import Order, Client, Company, User, Status, Comment
