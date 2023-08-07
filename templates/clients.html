@@ -95,11 +95,19 @@
                                                     to confirm deletion:</label>
                                                 <input class="form-control" type="text" name="client_f_l_name" id="subm"
                                                        style="margin-top: 2px">
-                                                <div class="form-check mt-2">
-                                                    <input class="form-check-input " type="checkbox" name="real_deletion"
-                                                           id="flexCheckChecked"/>
-                                                    <label class="form-check-label" for="flexCheckChecked">Real deleting</label>
-                                                </div>
+                                                {% if client.order_num == 0 %}
+                                                    <div class="form-check mt-2">
+                                                        <input class="form-check-input" type="checkbox"
+                                                               name="real_deletion"
+                                                               id="flexCheckChecked"/>
+                                                        <label class="form-check-label" for="flexCheckChecked">Delete forever: {{ client.order_num }}</label>
+                                                    </div>
+                                                {% else %}
+                                                    <label class="form-check-label" for="flexCheckChecked"><br>
+                                                        You can`t
+                                                        delete client forever because it have {{ client.order_num }}
+                                                        orders</label>
+                                                {% endif %}
                                                 <button type="submit" class="btn btn-danger" style="margin-top: 15px">
                                                     Delete
                                                 </button>
