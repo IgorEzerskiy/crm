@@ -122,7 +122,7 @@
                 {% else %}
                     <td>
                         <form method="post"
-                              action={% url "recovery-client" client.id %}>
+                              action={% url "recovery_client" client.id %}>
                             {% csrf_token %}
                             <button type="submit" class="btn btn-outline-success">
                                 Recovery client

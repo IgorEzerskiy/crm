@@ -36,6 +36,7 @@ class OrderListView(LoginRequiredMixin, ListView):
         context['clients'] = Client.objects.filter(
             service_company=self.request.user.company
         )
+
         return context
 
     def get_queryset(self):
@@ -108,20 +109,16 @@ class UserLogoutView(LoginRequiredMixin, LogoutView):
 
 
 class UserCreateView(CreateView):
-    # API Done
     template_name = 'registration.html'
     form_class = UserCreateForm
     success_url = '/login'
 
     def form_valid(self, form):
-        new_user_obj = form.save(
-            commit=False
-        )
+        new_user_obj = form.save(commit=False)
+
         if not self.request.POST.get('create_company'):
             try:
-                company = Company.objects.get(
-                    name=self.request.POST.get('company')
-                )
+                company = Company.objects.get(name=self.request.POST.get('company'))
                 new_user_obj.company = company
                 new_user_obj.is_active = False
                 new_user_obj.save()
@@ -137,9 +134,7 @@ class UserCreateView(CreateView):
             if not Company.objects.get(name=self.request.POST.get('company')):
                 username = new_user_obj.username
                 with transaction.atomic():
-                    company = Company.objects.create(
-                        name=self.request.POST.get('company')
-                    )
+                    company = Company.objects.create(name=self.request.POST.get('company'))
                     new_user_obj.company = company
                     new_user_obj.is_company_admin = True
                     new_user_obj.save()
@@ -151,9 +146,7 @@ class UserCreateView(CreateView):
                 form.add_error('company', 'Company already exist.')
                 return self.form_invalid(form=form)
 
-        return super().form_valid(
-            form=form
-        )
+        return super().form_valid(form=form)
 
 
 class ClientListView(LoginRequiredMixin, ListView):
@@ -239,9 +232,7 @@ class UserDeleteView(AdminPassedMixin, LoginRequiredMixin, DeleteView):
     def get_queryset(self):
         queryset = super().get_queryset()
 
-        return queryset.filter(
-            company=self.request.user.company
-        )
+        return queryset.filter(company=self.request.user.company)
 
     def form_valid(self, form):
         user = self.get_object()
@@ -252,7 +243,6 @@ class UserDeleteView(AdminPassedMixin, LoginRequiredMixin, DeleteView):
         if username == user.username:
             if current_img:
                 os.remove(current_img.path)
-            user.delete()
             messages.success(
                 self.request,
                 "Manager was delete successfully."
@@ -262,7 +252,8 @@ class UserDeleteView(AdminPassedMixin, LoginRequiredMixin, DeleteView):
                 self.request,
                 "Error deleting manager. The manager's username entered is not correct."
             )
-        return HttpResponseRedirect(self.get_success_url())
+
+        return super().form_valid(form=form)
 
 
 class UserConnectionRequestsListView(AdminPassedMixin, LoginRequiredMixin, ListView):
@@ -327,16 +318,12 @@ class ClientCreateView(LoginRequiredMixin, CreateView):
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
-        kwargs.update(
-            {"request": self.request}
-        )
+        kwargs.update({"request": self.request})
 
         return kwargs
 
     def form_valid(self, form):
-        client = form.save(
-            commit=False
-        )
+        client = form.save(commit=False)
         client.service_company = self.request.user.company
 
         messages.success(
@@ -344,9 +331,7 @@ class ClientCreateView(LoginRequiredMixin, CreateView):
             "Client was create successfully."
         )
 
-        return super().form_valid(
-            form=form
-        )
+        return super().form_valid(form=form)
 
 
 class ClientUpdateView(LoginRequiredMixin, UpdateView):
@@ -358,17 +343,14 @@ class ClientUpdateView(LoginRequiredMixin, UpdateView):
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
-        kwargs.update(
-            {"request": self.request}
-        )
+        kwargs.update({"request": self.request})
 
         return kwargs
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        return queryset.filter(
-            service_company=self.request.user.company
-        )
+
+        return queryset.filter(service_company=self.request.user.company)
 
     def form_valid(self, form):
         messages.success(
@@ -376,9 +358,7 @@ class ClientUpdateView(LoginRequiredMixin, UpdateView):
             "Client was update successfully."
         )
 
-        return super().form_valid(
-            form=form
-        )
+        return super().form_valid(form=form)
 
 
 class CompanyUpdateView(AdminPassedMixin, LoginRequiredMixin, UpdateView):
@@ -391,12 +371,11 @@ class CompanyUpdateView(AdminPassedMixin, LoginRequiredMixin, UpdateView):
     def get_queryset(self):
         queryset = super().get_queryset()
 
-        return queryset.filter(
-            name=self.request.user.company.name
-        )
+        return queryset.filter(name=self.request.user.company.name)
 
     def get_success_url(self):
         url = super().get_success_url()
+
         return url + f'profile/{self.request.user.id}'
 
     def form_valid(self, form):
@@ -405,9 +384,7 @@ class CompanyUpdateView(AdminPassedMixin, LoginRequiredMixin, UpdateView):
             "Company was update successfully."
         )
 
-        return super().form_valid(
-            form=form
-        )
+        return super().form_valid(form=form)
 
 
 class UserDetailView(LoginRequiredMixin, DetailView):
@@ -424,36 +401,27 @@ class OrderCreateView(LoginRequiredMixin, CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+
         order_form = context['form']
 
-        clients = Client.objects.filter(
-            service_company=self.request.user.company
-        )
-        managers = User.objects.filter(
-            company=self.request.user.company
-        )
+        clients = Client.objects.filter(service_company=self.request.user.company)
 
-        order_form.fields['client'] = ModelChoiceField(
-            queryset=clients
-        )
-        order_form.fields['manager'] = ModelChoiceField(
-            queryset=managers
-        )
+        managers = User.objects.filter(company=self.request.user.company)
 
-        order_form.fields['client'].widget.attrs.update(
-            {'class': 'form-control'}
-        )
-        order_form.fields['manager'].widget.attrs.update(
-            {'class': 'form-control'}
-        )
+        order_form.fields['client'] = ModelChoiceField(queryset=clients)
+
+        order_form.fields['manager'] = ModelChoiceField(queryset=managers)
+
+        order_form.fields['client'].widget.attrs.update({'class': 'form-control'})
+
+        order_form.fields['manager'].widget.attrs.update({'class': 'form-control'})
+
         context['new_order'] = order_form
 
         return context
 
     def form_valid(self, form):
-        order = form.save(
-            commit=False
-        )
+        order = form.save(commit=False)
         status = Status.objects.first()
         order.status = status
         order.save()
@@ -463,9 +431,9 @@ class OrderCreateView(LoginRequiredMixin, CreateView):
             "Order was create successfully."
         )
 
-        return super().form_valid(
-            form=form
-        )
+        return super().form_valid(form=form)
+
+#  ---------------------------------------------------------------------------------------
 
 
 class OrderUpdateView(LoginRequiredMixin, UpdateView):
