@@ -1,13 +1,18 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-from phone_field import PhoneField
 from phonenumber_field.modelfields import PhoneNumberField
 
 
 class Company(models.Model):
-    name = models.CharField(max_length=100, null=True, blank=True, unique=True)
-    telephone = PhoneNumberField(null=False, blank=False)
-    email = models.EmailField(null=False, blank=False)
+    name = models.CharField(max_length=100,
+                            unique=True
+                            )
+    telephone = PhoneNumberField(null=False,
+                                 blank=False
+                                 )
+    email = models.EmailField(null=False,
+                              blank=False
+                              )
 
     def __str__(self):
         return self.name
