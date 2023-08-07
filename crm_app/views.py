@@ -30,30 +30,67 @@ class OrderListView(LoginRequiredMixin, ListView):
         context['comments'] = Comment.objects.filter(
             author__company=self.request.user.company
         )
-
+        context['managers'] = User.objects.filter(
+            company=self.request.user.company
+        )
+        context['clients'] = Client.objects.filter(
+            service_company=self.request.user.company
+        )
         return context
 
     def get_queryset(self):
-        queryset = super().get_queryset()
-
-        if self.request.GET.get('orders_filter') == 'all':
-            return queryset.filter(
-                client__service_company=self.request.user.company
-            )
-        if self.request.GET.get('orders_filter') == 'active':
-            return queryset.filter(
-                client__service_company=self.request.user.company,
-                is_active_order=True
-            )
-        if self.request.GET.get('orders_filter') == 'hidden':
-            return queryset.filter(
-                client__service_company=self.request.user.company,
-                is_active_order=False
-            )
-        return queryset.filter(
+        queryset = super().get_queryset().filter(
             client__service_company=self.request.user.company,
-            is_active_order=True
         )
+
+        if 'orders_filter' in self.request.GET:
+            if self.request.GET.get('orders_filter') == 'all':
+                queryset = queryset.filter(
+                    client__service_company=self.request.user.company
+                )
+            if self.request.GET.get('orders_filter') == 'active':
+                queryset = queryset.filter(
+                    client__service_company=self.request.user.company,
+                    is_active_order=True
+                )
+            if self.request.GET.get('orders_filter') == 'hidden':
+                queryset = queryset.filter(
+                    client__service_company=self.request.user.company,
+                    is_active_order=False
+                )
+
+        if 'orders_filter_managers' in self.request.GET:
+            if self.request.GET.get('orders_filter_managers') != 'all':
+                try:
+                    manager = User.objects.get(
+                        id=self.request.GET.get('orders_filter_managers')
+                    )
+                    queryset = queryset.filter(
+                        client__service_company=self.request.user.company,
+                        manager=manager
+                    )
+                except User.DoesNotExist:
+                    messages.error(
+                        self.request,
+                        f'Manager does not exist.'
+                    )
+
+        if 'orders_filter_clients' in self.request.GET:
+            if self.request.GET.get('orders_filter_clients') != 'all':
+                try:
+                    client = Client.objects.get(
+                        id=self.request.GET.get('orders_filter_clients')
+                    )
+                    queryset = queryset.filter(
+                        client=client
+                    )
+                except Client.DoesNotExist:
+                    messages.error(
+                        self.request,
+                        f'Client does not exist.'
+                    )
+
+        return queryset
 
 
 # Auth
