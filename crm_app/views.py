@@ -131,20 +131,28 @@ class ClientListView(LoginRequiredMixin, ListView):
         if self.request.GET.get('clients_filter') == 'all':
             return queryset.filter(
                 service_company=self.request.user.company
+            ).annotate(
+                order_num=Count('order')
             )
         if self.request.GET.get('clients_filter') == 'active':
             return queryset.filter(
                 service_company=self.request.user.company,
                 is_active_client=True
+            ).annotate(
+                order_num=Count('order')
             )
         if self.request.GET.get('clients_filter') == 'inactive':
             return queryset.filter(
                 service_company=self.request.user.company,
                 is_active_client=False
+            ).annotate(
+                order_num=Count('order')
             )
         return queryset.filter(
             service_company=self.request.user.company
-        )
+        ).annotate(
+                order_num=Count('order')
+            )
 
 
 class UserListView(AdminPassedMixin, LoginRequiredMixin, ListView):
@@ -521,20 +529,27 @@ class ClientDeleteView(AdminPassedMixin, LoginRequiredMixin, DeleteView):
             manager__company=self.request.user.company
         )
         client_first_last_name = self.request.POST.get('client_f_l_name').split('-')
-
+         
         if client_first_last_name[0] == client.first_name \
                 and client_first_last_name[1] == client.last_name:
-            with transaction.atomic():
-                for order in orders:
-                    order.is_active_order = False
-                    order.save()
-                client.is_active_client = False
-                client.save()
+            if 'real_deletion' in self.request.POST and self.request.POST.get('real_deletion'):
+                messages.success(
+                    self.request,
+                    "Client was delete successfully FOREVER."
+                )
+                return super().form_valid(form=form)
+            else:
+                with transaction.atomic():
+                    for order in orders:
+                        order.is_active_order = False
+                        order.save()
+                    client.is_active_client = False
+                    client.save()
 
-            messages.success(
-                self.request,
-                "Client was delete successfully."
-            )
+                messages.success(
+                    self.request,
+                    "Client was delete successfully."
+                )
         else:
             messages.error(
                 self.request,
