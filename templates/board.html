@@ -3,18 +3,44 @@
 {% block content %}
     <div style="display: flex;  justify-content: right; margin-right: 5px; margin-left: 5px; width: 100%">
         <form style="display: flex; flex-direction: column; align-items: center">
-            <div class="form-floating" style="width: 150px;">
-                <select class="form-select" id="floatingSelect" aria-label="Floating label select example"
-                        name="orders_filter">
-                    <option value="all">All orders</option>
-                    <option selected value="active">Active orders</option>
-                    <option value="hidden">Hidden orders</option>
-                </select>
-                <label for="floatingSelect">Filter</label>
+            <div style="display: flex; align-items: flex-end">
+                <div class="form-floating" style="width: 150px; margin-right: 15px">
+                    <select class="form-select" id="floatingSelect" aria-label="Floating label select example"
+                            name="orders_filter">
+                        <option value="all">All orders</option>
+                        <option selected value="active">Active orders</option>
+                        <option value="hidden">Hidden orders</option>
+                    </select>
+                    <label for="floatingSelect">Filter by order status</label>
+                </div>
+                <div class="form-floating" style="width: 150px; margin-right: 15px">
+                    <select class="form-select" id="floatingSelect1" aria-label="Floating label select example"
+                            name="orders_filter_managers">
+                        <option selected value="all">All managers</option>
+                        {% for manager in managers %}
+                            <option value={{ manager.id }}>{{ manager.username }}</option>
+                        {% endfor %}
+                    </select>
+                    <label for="floatingSelect1">Filter by managers</label>
+                </div>
+                <div class="form-floating" style="width: 150px;">
+                    <select class="form-select" id="floatingSelect2" aria-label="Floating label select example"
+                            name="orders_filter_clients">
+                        <option selected value="all">All clients</option>
+                        {% for client in clients %}
+                            <option value={{ client.id }}>{{ client.first_name }} - {{ client.last_name }}</option>
+                        {% endfor %}
+                    </select>
+                    <label for="floatingSelect2">Filter by clients</label>
+                </div>
             </div>
             <input type="submit" value="Apply filter" class="btn btn-outline-success"
                    style="width: 150px; margin-top: 15px;">
         </form>
+        {#        <form style="display: flex; flex-direction: column; align-items: center">#}
+        {#            <input type="submit" value="Apply filter" class="btn btn-outline-success"#}
+        {#                   style="width: 150px; margin-top: 15px;">#}
+        {#        </form>#}
     </div>
     <div class="container text-center" style="display: flex; align-items: center; justify-content: center">
         <div class="row row-cols-4">
