@@ -393,21 +393,17 @@ class OrderCreateView(LoginRequiredMixin, CreateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        order_form = context['form']
-
         clients = self.request.user.company.clients
 
         managers = self.request.user.company.user
 
-        order_form.fields['client'] = ModelChoiceField(queryset=clients)
+        context['form'].fields['client'] = ModelChoiceField(queryset=clients)
 
-        order_form.fields['manager'] = ModelChoiceField(queryset=managers)
+        context['form'].fields['manager'] = ModelChoiceField(queryset=managers)
 
-        order_form.fields['client'].widget.attrs.update({'class': 'form-control'})
+        context['form'].fields['client'].widget.attrs.update({'class': 'form-control'})
 
-        order_form.fields['manager'].widget.attrs.update({'class': 'form-control'})
-
-        context['new_order'] = order_form
+        context['form'].fields['manager'].widget.attrs.update({'class': 'form-control'})
 
         return context
 
