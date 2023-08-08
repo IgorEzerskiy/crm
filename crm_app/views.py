@@ -524,7 +524,6 @@ class ClientDeleteView(AdminPassedMixin, LoginRequiredMixin, DeleteView):
                         order.save()
                     client.is_active_client = False
                     client.save()
-
                 messages.success(
                     self.request,
                     "Client was delete successfully."
