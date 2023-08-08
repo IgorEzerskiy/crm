@@ -100,13 +100,9 @@
                                                         <input class="form-check-input" type="checkbox"
                                                                name="real_deletion"
                                                                id="flexCheckChecked"/>
-                                                        <label class="form-check-label" for="flexCheckChecked">Delete forever: {{ client.order_num }}</label>
+                                                        <label class="form-check-label" for="flexCheckChecked">Delete
+                                                            forever</label>
                                                     </div>
-                                                {% else %}
-                                                    <label class="form-check-label" for="flexCheckChecked"><br>
-                                                        You can`t
-                                                        delete client forever because it have {{ client.order_num }}
-                                                        orders</label>
                                                 {% endif %}
                                                 <button type="submit" class="btn btn-danger" style="margin-top: 15px">
                                                     Delete
