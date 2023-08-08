@@ -434,21 +434,15 @@ class OrderUpdateView(LoginRequiredMixin, UpdateView):
         context = super().get_context_data(**kwargs)
 
         managers = self.request.user.company.user
-        context['form'].fields['manager'] = ModelChoiceField(
-            queryset=managers
-        )
-        context['form'].fields['manager'].widget.attrs.update(
-            {'class': 'form-control'}
-        )
+        context['form'].fields['manager'] = ModelChoiceField(queryset=managers)
+        context['form'].fields['manager'].widget.attrs.update({'class': 'form-control'})
 
         return context
 
     def get_queryset(self):
         queryset = super().get_queryset()
 
-        return queryset.filter(
-            manager__company=self.request.user.company
-        )
+        return queryset.filter(manager__company=self.request.user.company)
 
     def form_valid(self, form):
         messages.success(
@@ -456,9 +450,7 @@ class OrderUpdateView(LoginRequiredMixin, UpdateView):
             "Order was update successfully."
         )
 
-        return super().form_valid(
-            form=form
-        )
+        return super().form_valid(form=form)
 
 
 class CommentCreateView(LoginRequiredMixin, CreateView):
@@ -470,9 +462,8 @@ class CommentCreateView(LoginRequiredMixin, CreateView):
         comment_order = self.request.POST.get('comment_order')
 
         try:
-            order = Order.objects.get(
-                id=comment_order
-            )
+            order = Order.objects.get(id=comment_order)
+
             if len(comment_text) > 450:
                 messages.error(
                     self.request,
@@ -508,9 +499,7 @@ class ClientDeleteView(AdminPassedMixin, LoginRequiredMixin, DeleteView):
     def get_queryset(self):
         queryset = super().get_queryset()
 
-        return queryset.filter(
-            service_company=self.request.user.company
-        )
+        return queryset.filter(service_company=self.request.user.company)
 
     def form_valid(self, form):
         client = self.get_object()
@@ -545,6 +534,7 @@ class ClientDeleteView(AdminPassedMixin, LoginRequiredMixin, DeleteView):
                 self.request,
                 "Error deleting client. The user's first and last name entered is not correct."
             )
+
         return HttpResponseRedirect(self.get_success_url())
 
 
@@ -569,16 +559,13 @@ class ProfileInfoUpdateView(UpdateView):
         current_img = None if self.request.user.image.name == '' else self.request.user.image
 
         if new_img == current_img:
-            return super().form_valid(
-                form=form
-            )
+            return super().form_valid(form=form)
         else:
             if current_img:
                 os.remove(current_img.path)
             obj.save()
-        return super().form_valid(
-            form=form
-        )
+
+        return super().form_valid(form=form)
 
 
 class PasswordUpdateView(UpdateView):
@@ -590,6 +577,7 @@ class PasswordUpdateView(UpdateView):
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
         kwargs.update({"request": self.request})
+
         return kwargs
 
 
@@ -611,9 +599,7 @@ class ClientRecoveryUpdateView(UpdateView):
             self.object.is_active_client = True
             self.object.save()
 
-        return super().form_valid(
-            form=form
-        )
+        return super().form_valid(form=form)
 
 
 class UsersUpdateView(UpdateView):
@@ -628,6 +614,7 @@ class UsersUpdateView(UpdateView):
             "request": self.request,
             "user_id": self.kwargs['pk']
         })
+
         return kwargs
 
     def form_valid(self, form):
@@ -637,13 +624,10 @@ class UsersUpdateView(UpdateView):
         current_img = None if current_user.image.name == '' else current_user.image
 
         if new_img == current_img:
-            return super().form_valid(
-                form=form
-            )
+            return super().form_valid(form=form)
         else:
             if current_img:
                 os.remove(current_img.path)
             obj.save()
-        return super().form_valid(
-            form=form
-        )
+
+        return super().form_valid(form=form)
