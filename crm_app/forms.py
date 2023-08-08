@@ -356,18 +356,11 @@ class UserInfoUpdateForm(ModelForm):
     def clean_username(self):
         username = self.cleaned_data.get('username')
 
-        user = User.objects.filter(username=username)
-
-        if user.exists():
-            if not user.first().is_active:
-                raise forms.ValidationError(
-                    'Wait until the administrator of your company confirms the request to add you.'
-                )
-        else:
+        if not username:
             raise forms.ValidationError(
                 'Invalid username.'
             )
 
         return username
 
-    #  TODO:  correct validation username
+
