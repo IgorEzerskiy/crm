@@ -2,15 +2,11 @@ from django.contrib.auth.hashers import make_password
 from django.contrib import messages
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.forms import CharField, ModelForm, forms, DateField, \
-    DateInput, PasswordInput, EmailField, ImageField, FileInput, BooleanField
+    PasswordInput, EmailField, ImageField, FileInput, BooleanField, NumberInput
 from crm_app.models import User, Company, Client, Order
 from phonenumber_field.widgets import PhoneNumberPrefixWidget
 import re
 from django.core.validators import EmailValidator
-
-
-class CustomDateInput(DateInput):
-    input_type = 'date'
 
 
 class UserCreateForm(UserCreationForm):
@@ -159,12 +155,8 @@ class CompanyUpdateForm(ModelForm):
 
 
 class OrderCreateForm(ModelForm):
-    start_date = DateField(
-        widget=CustomDateInput()
-    )
-    due_date = DateField(
-        widget=CustomDateInput()
-    )
+    start_date = DateField(widget=NumberInput(attrs={'type': 'date'}))
+    due_date = DateField(widget=NumberInput(attrs={'type': 'date'}))
 
     class Meta:
         model = Order
@@ -210,12 +202,8 @@ class OrderCreateForm(ModelForm):
 
 
 class OrderUpdateForm(ModelForm):
-    start_date = DateField(
-        widget=CustomDateInput()
-    )
-    due_date = DateField(
-        widget=CustomDateInput()
-    )
+    start_date = DateField(widget=NumberInput(attrs={'type': 'date'}))
+    due_date = DateField(widget=NumberInput(attrs={'type': 'date'}))
 
     class Meta:
         model = Order
