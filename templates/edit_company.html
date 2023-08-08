@@ -9,7 +9,7 @@
                     <div class="row">
                         {% for field in form %}
                             <div class="col-xxl-6" style="margin-top: 15px;">
-                                <b>{{ field.label_tag }}</b> - {{ field }} {{ field.errors }}
+                                <b>{{ field.label_tag }}</b> {{ field }} {{ field.errors }}
                             </div>
                         {% endfor %}
                     </div>
