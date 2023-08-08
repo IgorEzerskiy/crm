@@ -307,7 +307,7 @@ class UserConnectionRequestsListView(AdminPassedMixin, LoginRequiredMixin, ListV
                     f'User does not exist.'
                 )
 
-        return HttpResponseRedirect('/users-connections-requests')
+        return HttpResponseRedirect('/user-connection-requests')
 
 
 class ClientCreateView(LoginRequiredMixin, CreateView):
