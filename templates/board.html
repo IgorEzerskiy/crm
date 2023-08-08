@@ -17,7 +17,7 @@
                     <select class="form-select" id="floatingSelect1" aria-label="Floating label select example"
                             name="orders_filter_managers">
                         <option selected value="all">All managers</option>
-                        {% for manager in managers %}
+                        {% for manager in request.user.company.user.all %}
                             <option value={{ manager.id }}>{{ manager.username }}</option>
                         {% endfor %}
                     </select>
@@ -27,7 +27,7 @@
                     <select class="form-select" id="floatingSelect2" aria-label="Floating label select example"
                             name="orders_filter_clients">
                         <option selected value="all">All clients</option>
-                        {% for client in clients %}
+                        {% for client in  request.user.company.clients.all %}
                             <option value={{ client.id }}>{{ client.first_name }} - {{ client.last_name }}</option>
                         {% endfor %}
                     </select>
@@ -104,7 +104,7 @@
                                                 <h5 class="card-title">Comments</h5>
                                                 <div class="modal-footer">
                                                     <ul class="list-group list-group-flush" style=" width: 100%">
-                                                        {% for comment in comments %}
+                                                        {% for comment in order.comments.all %}
                                                             {% if comment.order.id == order.id %}
                                                                 <li class="list-group-item"
                                                                     style="text-align: left">

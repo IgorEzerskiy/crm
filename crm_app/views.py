@@ -27,15 +27,6 @@ class OrderListView(LoginRequiredMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['statuses'] = Status.objects.all()
-        context['comments'] = Comment.objects.filter(
-            author__company=self.request.user.company
-        )
-        context['managers'] = User.objects.filter(
-            company=self.request.user.company
-        )
-        context['clients'] = Client.objects.filter(
-            service_company=self.request.user.company
-        )
 
         return context
 
@@ -404,9 +395,9 @@ class OrderCreateView(LoginRequiredMixin, CreateView):
 
         order_form = context['form']
 
-        clients = Client.objects.filter(service_company=self.request.user.company)
+        clients = self.request.user.company.clients
 
-        managers = User.objects.filter(company=self.request.user.company)
+        managers = self.request.user.company.user
 
         order_form.fields['client'] = ModelChoiceField(queryset=clients)
 
@@ -446,9 +437,7 @@ class OrderUpdateView(LoginRequiredMixin, UpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        managers = User.objects.filter(
-            company=self.request.user.company
-        )
+        managers = self.request.user.company.user
         context['form'].fields['manager'] = ModelChoiceField(
             queryset=managers
         )

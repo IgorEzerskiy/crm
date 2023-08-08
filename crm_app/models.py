@@ -36,7 +36,8 @@ class Client(models.Model):
                             )
     service_company = models.ForeignKey(
                                         Company,
-                                        on_delete=models.DO_NOTHING
+                                        on_delete=models.DO_NOTHING,
+                                        related_name='clients'
                                         )
 
     def __str__(self):
