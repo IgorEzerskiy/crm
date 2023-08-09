@@ -123,15 +123,7 @@
                                                         {% csrf_token %}
                                                         <input class="form-control" type="hidden"
                                                                name="comment_order" value={{ order.id }}>
-                                                        <div class="mb-3">
-                                                            <label for="exampleFormControlTextarea1"
-                                                                   class="form-label">Add
-                                                                comment: </label>
-                                                            <textarea class="form-control"
-                                                                      id="exampleFormControlTextarea1"
-                                                                      rows="3" maxlength="450"
-                                                                      name="comment_text"></textarea>
-                                                        </div>
+                                                        {{ comment_form.as_p }}
                                                         <input type="submit" value="Add comment"
                                                                class="btn btn-outline-success"
                                                                style="width: 150px; margin-top: 15px;">

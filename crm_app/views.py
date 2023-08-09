@@ -7,7 +7,7 @@ from django.views.generic import ListView, CreateView, UpdateView, DetailView, D
 from django.forms import ModelChoiceField
 
 from crm_app.forms import UserLoginForm, UserCreateForm, ClientModelForm, CompanyUpdateForm, OrderCreateForm, \
-    OrderUpdateForm, PasswordChangeForm, UserInfoUpdateForm
+    OrderUpdateForm, PasswordChangeForm, UserInfoUpdateForm, CommentCreateModelForm
 from crm_app.models import Order, Client, Company, User, Status, Comment
 from django.contrib import messages
 import os
@@ -23,6 +23,7 @@ class OrderListView(LoginRequiredMixin, ListView):
     template_name = 'board.html'
     queryset = Order.objects.all()
     login_url = 'login/'
+    extra_context = {'comment_form': CommentCreateModelForm}
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -466,39 +467,42 @@ class OrderUpdateView(LoginRequiredMixin, UpdateView):
 class CommentCreateView(LoginRequiredMixin, CreateView):
     success_url = '/'
     login_url = '/login'
+    queryset = Comment.objects.all()
+    form_class = CommentCreateModelForm
 
-    def post(self, request, *args, **kwargs):
-        comment_text = self.request.POST.get('comment_text')
-        comment_order = self.request.POST.get('comment_order')
+    def get_queryset(self):
+        queryset = super().get_queryset()
 
-        try:
-            order = Order.objects.get(id=comment_order)
+        return queryset.filter(author__company=self.request.user.company)
 
-            if len(comment_text) > 450:
+    def form_valid(self, form):
+        comment = form.save(commit=False)
+
+        if 'comment_order' in self.request.POST and self.request.POST.get('comment_order') != '':
+            try:
+                order = Order.objects.get(id=self.request.POST.get('comment_order'))
+                comment.order = order
+            except Order.DoesNotExist:
                 messages.error(
                     self.request,
-                    "Your comment contains more than 450 characters."
+                    "Order does not exist."
                 )
+
                 return HttpResponseRedirect(self.success_url)
-            if comment_text and comment_order:
-                Comment.objects.create(
-                    text=comment_text,
-                    order=order,
-                    author=self.request.user
-                )
-            else:
-                messages.error(
-                    self.request,
-                    "Error creating comment."
-                )
-                return HttpResponseRedirect(self.success_url)
-        except Order.DoesNotExist:
+        else:
             messages.error(
                 self.request,
-                "Order does not exist."
+                "Order field are empty."
             )
+            return HttpResponseRedirect(self.success_url)
+        comment.author = self.request.user
 
-        return HttpResponseRedirect(self.success_url)
+        messages.success(
+            self.request,
+            "The comment was added successfully."
+        )
+
+        return super().form_valid(form=form)
 
 
 class ClientDeleteView(AdminPassedMixin, LoginRequiredMixin, DeleteView):

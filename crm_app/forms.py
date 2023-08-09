@@ -3,7 +3,7 @@ from django.contrib import messages
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.forms import CharField, ModelForm, forms, DateField, \
     PasswordInput, EmailField, ImageField, FileInput, BooleanField, NumberInput
-from crm_app.models import User, Company, Client, Order
+from crm_app.models import User, Company, Client, Order, Comment
 from phonenumber_field.widgets import PhoneNumberPrefixWidget
 import re
 from django.core.validators import EmailValidator
@@ -364,5 +364,12 @@ class UserInfoUpdateForm(ModelForm):
         return username
 
 
+class CommentCreateModelForm(ModelForm):
+    class Meta:
+        model = Comment
+        fields = ['text']
 
-
+    def __init__(self, *args, **kwargs):
+        super(CommentCreateModelForm, self).__init__(*args, **kwargs)
+        self.fields['text'].widget.attrs.update({'class': 'form-control'})
+        self.fields['text'].label = 'Add comment:'

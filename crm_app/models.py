@@ -99,7 +99,7 @@ class Order(models.Model):
 class Comment(models.Model):
     created_at = models.DateField(auto_now=True)
     updated_at = models.DateTimeField(auto_now_add=True)
-    text = models.CharField(max_length=450)
+    text = models.TextField(max_length=450)
     order = models.ForeignKey(
                               Order,
                               on_delete=models.CASCADE,
