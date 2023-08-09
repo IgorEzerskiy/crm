@@ -6,8 +6,8 @@ from django.http import HttpResponseRedirect
 from django.views.generic import ListView, CreateView, UpdateView, DetailView, DeleteView
 from django.forms import ModelChoiceField
 
-from crm_app.forms import UserLoginForm, UserCreateForm, ClientModelForm, CompanyUpdateForm, OrderCreateForm, \
-    OrderUpdateForm, PasswordChangeForm, UserInfoUpdateForm, CommentCreateModelForm
+from crm_app.forms import UserLoginForm, UserCreateForm, ClientModelForm, CompanyUpdateForm, OrderModelForm, \
+    PasswordChangeForm, UserInfoUpdateForm, CommentCreateModelForm
 from crm_app.models import Order, Client, Company, User, Status, Comment
 from django.contrib import messages
 import os
@@ -399,7 +399,7 @@ class UserDetailView(LoginRequiredMixin, DetailView):
 
 class OrderCreateView(LoginRequiredMixin, CreateView):
     template_name = 'new_order.html'
-    form_class = OrderCreateForm
+    form_class = OrderModelForm
     success_url = '/'
     login_url = '/login'
 
@@ -420,6 +420,15 @@ class OrderCreateView(LoginRequiredMixin, CreateView):
 
         return context
 
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs.update({
+            "request": self.request,
+            "view": 'create_view'
+        })
+
+        return kwargs
+
     def form_valid(self, form):
         order = form.save(commit=False)
         status = Status.objects.first()
@@ -437,7 +446,7 @@ class OrderCreateView(LoginRequiredMixin, CreateView):
 class OrderUpdateView(LoginRequiredMixin, UpdateView):
     template_name = 'update_order.html'
     queryset = Order.objects.all()
-    form_class = OrderUpdateForm
+    form_class = OrderModelForm
     success_url = '/'
     login_url = '/login'
 
@@ -449,6 +458,15 @@ class OrderUpdateView(LoginRequiredMixin, UpdateView):
         context['form'].fields['manager'].widget.attrs.update({'class': 'form-control'})
 
         return context
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs.update({
+            "request": self.request,
+            "view": 'update_view'
+        })
+
+        return kwargs
 
     def get_queryset(self):
         queryset = super().get_queryset()
