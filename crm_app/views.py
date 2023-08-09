@@ -120,8 +120,10 @@ class UserCreateView(CreateView):
                     f'Wait for company administrator confirmation.'
                 )
             except Company.DoesNotExist:
-                form.add_error('company', 'Company does not exist.')
-                return self.form_invalid(form=form)
+                messages.error(
+                    self.request,
+                    'Company does not exist.')
+                return HttpResponseRedirect('/registration')
         else:
             if not Company.objects.get(name=self.request.POST.get('company')):
                 username = new_user_obj.username
@@ -135,8 +137,10 @@ class UserCreateView(CreateView):
                     f'HI, {username}. You created a new company called: {company.name}.'
                 )
             else:
-                form.add_error('company', 'Company already exist.')
-                return self.form_invalid(form=form)
+                messages.error(
+                    self.request,
+                    'Company already exist.')
+                return HttpResponseRedirect('/registration')
 
         return super().form_valid(form=form)
 
@@ -227,7 +231,7 @@ class UserDeleteView(AdminPassedMixin, LoginRequiredMixin, DeleteView):
         return queryset.filter(company=self.request.user.company)
 
     def form_valid(self, form):
-        user = self.get_object()
+        user = self.object
         username = self.request.POST.get('user_name')
 
         current_img = None if user.image.name == '' else user.image
@@ -277,7 +281,6 @@ class UserConnectionApproveView(AdminPassedMixin, LoginRequiredMixin, UpdateView
     def form_valid(self, form):
         if not self.object.is_active:
             self.object.is_active = True
-            self.object.save()
             messages.success(
                 self.request,
                 'User added to your company successfully.'
@@ -431,9 +434,6 @@ class OrderCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form=form)
 
 
-#  ---------------------------------------------------------------------------------------
-
-
 class OrderUpdateView(LoginRequiredMixin, UpdateView):
     template_name = 'update_order.html'
     queryset = Order.objects.all()
@@ -516,7 +516,7 @@ class ClientDeleteView(AdminPassedMixin, LoginRequiredMixin, DeleteView):
         return queryset.filter(service_company=self.request.user.company)
 
     def form_valid(self, form):
-        client = self.get_object()
+        client = self.object
         orders = Order.objects.filter(
             client__id=client.id,
             manager__company=self.request.user.company
@@ -632,7 +632,7 @@ class UsersUpdateView(UpdateView):
 
     def form_valid(self, form):
         obj = form.save(commit=False)
-        current_user = User.objects.get(id=self.kwargs['pk'])
+        current_user = self.object
         new_img = form.cleaned_data.get('image')
         current_img = None if current_user.image.name == '' else current_user.image
 
