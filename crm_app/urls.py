@@ -3,7 +3,7 @@ from django.conf.urls.static import static
 from crm_app.views import OrderListView, UserLoginView, UserLogoutView, UserCreateView, ClientCreateView, \
     ClientListView, ClientUpdateView, CompanyUpdateView, UserListView, UserDetailView, UserConnectionRequestsListView, \
     OrderCreateView, CommentCreateView, OrderUpdateView, ClientDeleteView, ProfileInfoUpdateView, PasswordUpdateView, \
-    ClientRecoveryUpdateView, UsersUpdateView, UserDeleteView
+    ClientRecoveryUpdateView, UsersUpdateView, UserDeleteView, UserConnectionApproveView, UserConnectionDeleteView
 from CRM import settings
 
 urlpatterns = [
@@ -18,6 +18,8 @@ urlpatterns = [
     path('edit-company/<int:pk>', CompanyUpdateView.as_view(), name='edit_company'),
     path('users/', UserListView.as_view(), name='users'),
     path('user-connection-requests/', UserConnectionRequestsListView.as_view(), name='users_connections_requests'),
+    path('approve-user-connetcion/<int:pk>', UserConnectionApproveView.as_view(), name='approve_user_connection'),
+    path('cancel-user-connection/<int:pk>', UserConnectionDeleteView.as_view(), name='cancel_user_connection'),
     path('profile/<int:pk>', UserDetailView.as_view(), name='profile'),
     path('new-order/', OrderCreateView.as_view(), name='new_order'),
     path('add-comment/', CommentCreateView.as_view(), name='add_comment'),

@@ -25,21 +25,15 @@
                 <td>{{ user.email }}</td>
                 <td>{{ user.company.name }}</td>
                 <td>
-                    <form method="post" action={% url "users_connections_requests" %}>
+                    <form method="post" action={% url "approve_user_connection" user.id %}>
                         {% csrf_token %}
-                        <input type="hidden" class="form-control"
-                               name="approve_user_id"
-                               value={{ user.id }}>
                         <button type="submit" class="btn btn-outline-success">Approve
                         </button>
                     </form>
                 </td>
                 <td>
-                    <form method="post" action={% url "users_connections_requests" %}>
+                    <form method="post" action={% url "cancel_user_connection" user.id %}>
                         {% csrf_token %}
-                        <input type="hidden" class="form-control"
-                               name="cancel_user_id"
-                               value={{ user.id }}>
                         <button type="submit" class="btn btn-outline-danger">Cancel
                         </button>
                     </form>

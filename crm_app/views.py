@@ -172,8 +172,8 @@ class ClientListView(LoginRequiredMixin, ListView):
         return queryset.filter(
             service_company=self.request.user.company
         ).annotate(
-                order_num=Count('order')
-            )
+            order_num=Count('order')
+        )
 
 
 class UserListView(AdminPassedMixin, LoginRequiredMixin, ListView):
@@ -261,44 +261,53 @@ class UserConnectionRequestsListView(AdminPassedMixin, LoginRequiredMixin, ListV
             is_active=False
         )
 
-    def post(self, request, *args, **kwargs):
-        approved_id = self.request.POST.get('approve_user_id')
-        cancel_id = self.request.POST.get('cancel_user_id')
 
-        if approved_id:
-            try:
-                user = User.objects.get(
-                    id=approved_id
-                )
-                user.is_active = True
-                user.save()
-                messages.success(
-                    self.request,
-                    'User added to your company successfully.'
-                )
-            except User.DoesNotExist:
-                messages.error(
-                    self.request,
-                    f'User does not exist.'
-                )
+class UserConnectionApproveView(AdminPassedMixin, LoginRequiredMixin, UpdateView):
+    login_url = '/login'
+    success_url = '/user-connection-requests'
+    queryset = User.objects.all()
+    fields = ()
 
-        if cancel_id:
-            try:
-                user = User.objects.get(
-                    id=cancel_id
-                )
-                user.delete()
-                messages.success(
-                    self.request,
-                    "The user's request was rejected successfully."
-                )
-            except User.DoesNotExist:
-                messages.error(
-                    self.request,
-                    f'User does not exist.'
-                )
+    def get_queryset(self):
+        queryset = super().get_queryset()
 
-        return HttpResponseRedirect('/user-connection-requests')
+        return queryset.filter(company=self.request.user.company)
+
+    def form_valid(self, form):
+        if not self.object.is_active:
+            self.object.is_active = True
+            self.object.save()
+            messages.success(
+                self.request,
+                'User added to your company successfully.'
+            )
+        else:
+            messages.error(
+                self.request,
+                'User is already added to your company.'
+            )
+
+        return super().form_valid(form=form)
+
+
+class UserConnectionDeleteView(AdminPassedMixin, LoginRequiredMixin, DeleteView):
+    login_url = '/login'
+    success_url = '/user-connection-requests'
+    queryset = User.objects.all()
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+
+        return queryset.filter(company=self.request.user.company)
+
+    def form_valid(self, form):
+        if self.object:
+            messages.success(
+                self.request,
+                "The user's request was rejected successfully."
+            )
+
+        return super().form_valid(form=form)
 
 
 class ClientCreateView(LoginRequiredMixin, CreateView):
@@ -420,6 +429,7 @@ class OrderCreateView(LoginRequiredMixin, CreateView):
 
         return super().form_valid(form=form)
 
+
 #  ---------------------------------------------------------------------------------------
 
 
@@ -508,7 +518,7 @@ class ClientDeleteView(AdminPassedMixin, LoginRequiredMixin, DeleteView):
             manager__company=self.request.user.company
         )
         client_first_last_name = self.request.POST.get('client_f_l_name').split('-')
-         
+
         if client_first_last_name[0] == client.first_name \
                 and client_first_last_name[1] == client.last_name:
             if 'real_deletion' in self.request.POST and self.request.POST.get('real_deletion'):
