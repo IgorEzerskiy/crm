@@ -38,17 +38,13 @@ class OrderListView(LoginRequiredMixin, ListView):
 
         if 'orders_filter' in self.request.GET:
             if self.request.GET.get('orders_filter') == 'all':
-                queryset = queryset.filter(
-                    client__service_company=self.request.user.company
-                )
+                """"""
             if self.request.GET.get('orders_filter') == 'active':
                 queryset = queryset.filter(
-                    client__service_company=self.request.user.company,
                     is_active_order=True
                 )
             if self.request.GET.get('orders_filter') == 'hidden':
                 queryset = queryset.filter(
-                    client__service_company=self.request.user.company,
                     is_active_order=False
                 )
 
@@ -59,7 +55,6 @@ class OrderListView(LoginRequiredMixin, ListView):
                         id=self.request.GET.get('orders_filter_managers')
                     )
                     queryset = queryset.filter(
-                        client__service_company=self.request.user.company,
                         manager=manager
                     )
                 except User.DoesNotExist:
@@ -152,31 +147,25 @@ class ClientListView(LoginRequiredMixin, ListView):
     login_url = '/login'
 
     def get_queryset(self):
-        queryset = super().get_queryset()
+        queryset = super().get_queryset().filter(service_company=self.request.user.company)
 
         if self.request.GET.get('clients_filter') == 'all':
-            return queryset.filter(
-                service_company=self.request.user.company
-            ).annotate(
+            return queryset.annotate(
                 order_num=Count('order')
             )
         if self.request.GET.get('clients_filter') == 'active':
             return queryset.filter(
-                service_company=self.request.user.company,
                 is_active_client=True
             ).annotate(
                 order_num=Count('order')
             )
         if self.request.GET.get('clients_filter') == 'inactive':
             return queryset.filter(
-                service_company=self.request.user.company,
                 is_active_client=False
             ).annotate(
                 order_num=Count('order')
             )
-        return queryset.filter(
-            service_company=self.request.user.company
-        ).annotate(
+        return queryset.annotate(
             order_num=Count('order')
         )
 
@@ -188,34 +177,26 @@ class UserListView(AdminPassedMixin, LoginRequiredMixin, ListView):
     login_url = '/login'
 
     def get_queryset(self):
-        queryset = super().get_queryset()
+        queryset = super().get_queryset().filter(company=self.request.user.company)
 
         if self.request.GET.get('users_filter') == 'all':
-            return queryset.filter(
-                company=self.request.user.company
-            ).annotate(
+            return queryset.annotate(
                 order_num=Count('order')
             )
         if self.request.GET.get('users_filter') == 'admins':
             return queryset.filter(
-                company=self.request.user.company,
                 is_company_admin=True
             ).annotate(
                 order_num=Count('order')
             )
         if self.request.GET.get('users_filter') == 'managers':
-            return queryset.filter(
-                company=self.request.user.company,
-
-            ).exclude(
+            return queryset.exclude(
                 is_company_admin=True
             ).annotate(
                 order_num=Count('order')
             )
 
-        return queryset.filter(
-            company=self.request.user.company
-        ).annotate(
+        return queryset.annotate(
             order_num=Count('order')
         )
 
