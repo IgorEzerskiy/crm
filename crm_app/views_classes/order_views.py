@@ -5,7 +5,7 @@ from crm_app.forms_classes.order_forms import OrderModelForm
 from crm_app.forms_classes.comment_forms import CommentCreateModelForm
 from crm_app.models import Order, Client, User, Status
 from django.contrib import messages
-from crm_app.views_classes.permissions import AdminPassedMixin
+# from crm_app.views_classes.permissions import AdminPassedMixin
 
 
 class OrderListView(LoginRequiredMixin, ListView):
