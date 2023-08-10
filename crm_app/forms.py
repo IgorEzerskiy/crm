@@ -91,7 +91,6 @@ class ClientModelForm(ModelForm):
             'telephone',
             'email',
             'telegram',
-            'slack',
         )
         widgets = {
             'telephone': PhoneNumberPrefixWidget(country_attrs={
@@ -108,9 +107,6 @@ class ClientModelForm(ModelForm):
         self.fields['telephone'].widget.attrs.update({'class': 'form-control'})
         self.fields['email'].widget.attrs.update({'class': 'form-control'})
         self.fields['telegram'].widget.attrs.update({'class': 'form-control'})
-        self.fields['slack'].widget.attrs.update({'class': 'form-control'})
-
-        #  TODO: Validate slack domain
 
     def clean_first_name(self):
         first_name = self.cleaned_data.get('first_name')

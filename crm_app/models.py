@@ -29,11 +29,6 @@ class Client(models.Model):
                                 null=True,
                                 blank=True
                                )
-    slack = models.CharField(
-                            max_length=60,
-                            null=True,
-                            blank=True
-                            )
     service_company = models.ForeignKey(
                                         Company,
                                         on_delete=models.DO_NOTHING,
