@@ -25,10 +25,13 @@ class CompanyUpdateForm(ModelForm):
         self.fields['email'].widget.attrs.update({'class': 'form-control'})
 
     def clean_name(self):
-        name = self.cleaned_data.get('name')
+        name_row = self.cleaned_data.get('name')
+        name = name_row.strip()
 
         if name is not None and re.match(r'^\d+$', name):
             raise forms.ValidationError('It can`t be only digits')
+        elif re.search(r'\s{2,}', name):
+            raise forms.ValidationError('Two or more spaces in a row. Please enter name correctly.')
         elif name is None:
             raise forms.ValidationError('You have to name your company')
 
