@@ -1,10 +1,17 @@
-from django.forms import ModelForm, forms
+from django.forms import ModelForm, forms, EmailField
 from crm_app.models import Company
 from phonenumber_field.widgets import PhoneNumberPrefixWidget
 import re
 
+from crm_app.validators import email_validator
+
 
 class CompanyUpdateForm(ModelForm):
+    email = EmailField(
+        validators=[email_validator],
+        required=False
+    )
+
     class Meta:
         model = Company
         fields = (

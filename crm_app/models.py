@@ -70,8 +70,6 @@ class Order(models.Model):
                                Client,
                                on_delete=models.DO_NOTHING,
                                related_name='order',
-                               null=True,
-                               blank=True
                                )
     manager = models.ForeignKey(
                                 User,

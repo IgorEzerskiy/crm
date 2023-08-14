@@ -13,6 +13,13 @@ class CommentCreateView(LoginRequiredMixin, CreateView):
     login_url = '/login'
     queryset = Comment.objects.all()
     form_class = CommentCreateModelForm
+    # template_name = 'board.html'
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs.update({'request': self.request})
+
+        return kwargs
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -21,25 +28,9 @@ class CommentCreateView(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form):
         comment = form.save(commit=False)
-
-        if 'comment_order' in self.request.POST and self.request.POST.get('comment_order') != '':
-            try:
-                order = Order.objects.get(id=self.request.POST.get('comment_order'))
-                comment.order = order
-            except Order.DoesNotExist:
-                messages.error(
-                    self.request,
-                    "Order does not exist."
-                )
-
-                return HttpResponseRedirect(self.success_url)
-        else:
-            messages.error(
-                self.request,
-                "Order field are empty."
-            )
-            return HttpResponseRedirect(self.success_url)
+        comment.order = form.order_obj
         comment.author = self.request.user
+        comment.save()
 
         messages.success(
             self.request,

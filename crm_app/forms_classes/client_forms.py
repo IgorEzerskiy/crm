@@ -1,9 +1,16 @@
-from django.forms import ModelForm, forms
+from django.forms import ModelForm, forms, EmailField
 from crm_app.models import Client
 from phonenumber_field.widgets import PhoneNumberPrefixWidget
 
+from crm_app.validators import email_validator
+
 
 class ClientModelForm(ModelForm):
+    email = EmailField(
+        validators=[email_validator],
+        required=False
+    )
+
     class Meta:
         model = Client
         fields = (

@@ -5,6 +5,7 @@ from django.contrib import messages
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.forms import CharField, ModelForm, forms, PasswordInput, EmailField, ImageField, FileInput, BooleanField
 from crm_app.models import User
+from crm_app.validators import email_validator
 
 
 class UserCreateForm(UserCreationForm):
@@ -147,11 +148,10 @@ class PasswordChangeForm(ModelForm):
 
 
 class UserInfoUpdateForm(ModelForm):
-    email = EmailField()
-    #     validators=[
-    #         EmailValidator(message="Enter correct email")],
-    #     required=False
-
+    email = EmailField(
+        validators=[email_validator],
+        required=False
+    )
     image = ImageField(
         widget=FileInput(
             attrs={"id": "image_field",
@@ -188,15 +188,6 @@ class UserInfoUpdateForm(ModelForm):
         self.fields['last_name'].widget.attrs.update({'class': 'form-control'})
         self.fields['email'].widget.attrs.update({'class': 'form-control'})
         self.fields['image'].widget.attrs.update({'class': 'form-control'})
-
-    def clean_email(self):
-        email = self.cleaned_data.get('email')
-        pattern = r'^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
-
-        if not re.match(pattern, email):
-            raise forms.ValidationError('Enter a valid email address.')
-        
-        return email
 
     def clean_first_name(self):
         first_name = self.cleaned_data.get('first_name')
