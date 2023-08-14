@@ -7,7 +7,6 @@ from django.forms import CharField, ModelForm, forms, PasswordInput, EmailField,
 from crm_app.models import User
 
 
-
 class UserCreateForm(UserCreationForm):
     company = CharField(max_length=100)
     first_name = CharField(
@@ -190,13 +189,14 @@ class UserInfoUpdateForm(ModelForm):
         self.fields['email'].widget.attrs.update({'class': 'form-control'})
         self.fields['image'].widget.attrs.update({'class': 'form-control'})
 
-    # def clean_email(self):
-    #     email = self.cleaned_data.get('email')
-    #     email_local_part = email.split('@')[0]
-    #
-    #     if not re.match(r'^[a-zA-Z0-9._-]+', email_local_part):
-    #         raise forms.ValidationError('Invalid email')
-    #     return email
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        pattern = r'^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+
+        if not re.match(pattern, email):
+            raise forms.ValidationError('Enter a valid email address.')
+        
+        return email
 
     def clean_first_name(self):
         first_name = self.cleaned_data.get('first_name')
