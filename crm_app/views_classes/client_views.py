@@ -137,10 +137,11 @@ class ClientDeleteView(AdminPassedMixin, LoginRequiredMixin, DeleteView):
         return HttpResponseRedirect(self.get_success_url())
 
 
-class ClientRecoveryUpdateView(UpdateView):
+class ClientRecoveryUpdateView(AdminPassedMixin, LoginRequiredMixin, UpdateView):
     model = Client
     success_url = '/clients'
     fields = ()
+    login_url = 'login/'
 
     def form_valid(self, form):
         orders = Order.objects.filter(

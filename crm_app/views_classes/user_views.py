@@ -139,11 +139,12 @@ class UserDetailView(LoginRequiredMixin, DetailView):
     extra_context = {'form': PasswordChangeForm}
 
 
-class ProfileInfoUpdateView(UpdateView):
+class ProfileInfoUpdateView(LoginRequiredMixin, UpdateView):
     template_name = 'update_profile.html'
     queryset = User.objects.all()
     form_class = UserInfoUpdateForm
     success_url = '/'
+    login_url = 'login/'
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -169,11 +170,12 @@ class ProfileInfoUpdateView(UpdateView):
         return super().form_valid(form=form)
 
 
-class PasswordUpdateView(UpdateView):
+class PasswordUpdateView(LoginRequiredMixin, UpdateView):
     template_name = 'profile.html'
     model = User
     form_class = PasswordChangeForm
     success_url = '/'
+    login_url = '/'
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -182,7 +184,7 @@ class PasswordUpdateView(UpdateView):
         return kwargs
 
 
-class UsersUpdateView(UpdateView):
+class UsersUpdateView(AdminPassedMixin, LoginRequiredMixin, UpdateView):
     template_name = 'users_update.html'
     queryset = User.objects.all()
     form_class = UserInfoUpdateForm
