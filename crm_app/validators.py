@@ -8,3 +8,10 @@ def email_validator(email):
 
     if not re.match(pattern, email):
         raise ValidationError('Enter a valid email address.')
+
+
+def telegram_username_validator(username):
+    pattern = r'^@[a-zA-Z0-9._-]+$'
+
+    if not re.match(pattern, username):
+        raise ValidationError('Enter a valid telegram username.')

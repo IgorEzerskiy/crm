@@ -12,34 +12,26 @@ class CommentCreateModelForm(ModelForm):
     def __init__(self, *args, **kwargs):
         if 'request' in kwargs:
             self.request = kwargs.pop('request')
+        if 'kwargs' in kwargs:
+            self.kwargs = kwargs.pop('kwargs')
         super(CommentCreateModelForm, self).__init__(*args, **kwargs)
         self.fields['text'].widget.attrs.update({'class': 'form-control'})
         self.fields['text'].label = 'Add comment:'
 
-    def clean_text(self):
-        text = self.cleaned_data.get('text')
-        self.add_error(None, 'Error')
-        if text.isspace():
+    def clean(self):
+        cleaned_data = super().clean()
+        try:
+            Order.objects.get(id=self.kwargs.get('pk'))
+        except Order.DoesNotExist:
+            self.add_error(None, 'Error')
+            messages.error(
+                self.request,
+                "Order does not exist."
+            )
+
+        if cleaned_data.get('text') is None:
+            self.add_error(None, 'Error')
             messages.error(
                 self.request,
                 "This field can not string contains only spaces."
-            )
-
-        return text
-
-    def clean(self):
-        if 'comment_order' in self.request.POST and self.request.POST.get('comment_order') != '':
-            try:
-                order = Order.objects.get(id=self.request.POST.get('comment_order'))
-                self.order_obj = order
-            except Order.DoesNotExist:
-                self.add_error(None, 'Error')
-                messages.error(
-                    self.request,
-                    "Order does not exist."
-                )
-        else:
-            messages.error(
-                self.request,
-                "Order field are empty."
             )

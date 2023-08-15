@@ -119,10 +119,10 @@
                                                     </ul>
                                                 </div>
                                                 <div class="modal-body">
-                                                    <form method="post" action={% url "add_comment" %}>
+                                                    <form method="post" action={% url "add_comment" order.id %}>
                                                         {% csrf_token %}
-                                                        <input class="form-control" type="hidden"
-                                                               name="comment_order" value={{ order.id }}>
+{#                                                        <input class="form-control" type="hidden"#}
+{#                                                               name="comment_order" value={{ order.id }}>#}
                                                         {{ comment_form.as_p }}
                                                         <input type="submit" value="Add comment"
                                                                class="btn btn-outline-success"

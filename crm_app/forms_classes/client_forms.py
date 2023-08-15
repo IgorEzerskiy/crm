@@ -1,13 +1,18 @@
-from django.forms import ModelForm, forms, EmailField
+from django.forms import ModelForm, forms, EmailField, CharField
 from crm_app.models import Client
 from phonenumber_field.widgets import PhoneNumberPrefixWidget
 
-from crm_app.validators import email_validator
+from crm_app.validators import email_validator, telegram_username_validator
 
 
 class ClientModelForm(ModelForm):
     email = EmailField(
         validators=[email_validator],
+        required=False
+    )
+
+    telegram = CharField(
+        validators=[telegram_username_validator],
         required=False
     )
 
@@ -51,11 +56,3 @@ class ClientModelForm(ModelForm):
             raise forms.ValidationError('Only letter')
 
         return last_name
-
-    def clean_telegram(self):
-        telegram = self.cleaned_data.get('telegram')
-
-        if telegram is not None and not telegram.startswith('@'):
-            raise forms.ValidationError('It should starts with "@"')
-
-        return telegram

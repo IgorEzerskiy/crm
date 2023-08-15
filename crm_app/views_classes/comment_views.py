@@ -6,6 +6,7 @@ from django.views.generic import CreateView
 from crm_app.forms_classes.comment_forms import CommentCreateModelForm
 from crm_app.models import Order, Comment
 from django.contrib import messages
+from django.urls import reverse
 
 
 class CommentCreateView(LoginRequiredMixin, CreateView):
@@ -13,11 +14,11 @@ class CommentCreateView(LoginRequiredMixin, CreateView):
     login_url = '/login'
     queryset = Comment.objects.all()
     form_class = CommentCreateModelForm
-    # template_name = 'board.html'
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
-        kwargs.update({'request': self.request})
+        kwargs.update({'request': self.request,
+                       'kwargs': self.kwargs})
 
         return kwargs
 
@@ -28,7 +29,7 @@ class CommentCreateView(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form):
         comment = form.save(commit=False)
-        comment.order = form.order_obj
+        comment.order = Order.objects.get(id=self.kwargs.get('pk'))
         comment.author = self.request.user
         comment.save()
 
@@ -38,3 +39,6 @@ class CommentCreateView(LoginRequiredMixin, CreateView):
         )
 
         return super().form_valid(form=form)
+
+    def form_invalid(self, form):
+        return HttpResponseRedirect(reverse('board'))
