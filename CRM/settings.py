@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'crm_app',
     'phone_field',
     "phonenumber_field",
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
