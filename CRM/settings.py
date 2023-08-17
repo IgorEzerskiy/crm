@@ -136,3 +136,4 @@ MEDIA_URL = '/profile_images/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'crm_app.User'
+TOKEN_TIME = 60
