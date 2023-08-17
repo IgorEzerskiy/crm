@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, include
 from django.conf.urls.static import static
 from crm_app.views import OrderListView, UserLoginView, UserLogoutView, UserCreateView, ClientCreateView, \
     ClientListView, ClientUpdateView, CompanyUpdateView, UserListView, UserDetailView, UserConnectionRequestsListView, \
@@ -7,6 +7,7 @@ from crm_app.views import OrderListView, UserLoginView, UserLogoutView, UserCrea
 from CRM import settings
 
 urlpatterns = [
+    path('api/', include('crm_app.api.urls')),
     path('board/', OrderListView.as_view(), name='board'),
     path('', OrderListView.as_view(), name='main'),
     path('login/', UserLoginView.as_view(), name='login'),
