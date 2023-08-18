@@ -7,6 +7,8 @@ from crm_app.models import Order, Client, User, Status
 from django.contrib import messages
 # from crm_app.views_classes.permissions import AdminPassedMixin
 
+# API Done
+
 
 class OrderListView(LoginRequiredMixin, ListView):
     template_name = 'board.html'
