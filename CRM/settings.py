@@ -13,7 +13,6 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 from pathlib import Path
 import os
 
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -41,6 +40,7 @@ INSTALLED_APPS = [
     'phone_field',
     "phonenumber_field",
     'rest_framework',
+    'rest_framework.authtoken'
 ]
 
 MIDDLEWARE = [
@@ -124,7 +124,6 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 STATIC_URL = 'static/'
 STATICFILES_DIRS = ()
 
-
 STATIC_ROOT = 'static/'
 MEDIA_ROOT = (
     BASE_DIR)
@@ -137,3 +136,12 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'crm_app.User'
 TOKEN_TIME = 60
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'crm_app.api.authentication.TokenExpiredAuthentication',
+    ],
+    # 'DEFAULT_FILTER_BACKENDS': [
+    #     'rest_framework.filters.SearchFilter'
+    # ]
+}

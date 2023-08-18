@@ -42,10 +42,10 @@ class StatusReadSerializer(serializers.ModelSerializer):
 
 
 class OrderReadSerializer(serializers.ModelSerializer):
-    manager = UserReadSerializer()
-    client = ClientReadSerializer()
-    status = StatusReadSerializer()
-    comments = CommentReadSerializer(many=True)
+    manager = UserReadSerializer(read_only=True)
+    client = ClientReadSerializer(read_only=True)
+    status = StatusReadSerializer(read_only=True)
+    comments = CommentReadSerializer(read_only=True, many=True)
 
     class Meta:
         model = Order
@@ -61,3 +61,34 @@ class OrderReadSerializer(serializers.ModelSerializer):
             'payment_amount',
             'comments'
         ]
+
+
+class OrderCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Order
+        fields = [
+            'title',
+            'description',
+            'client',
+            'manager',
+            'start_date',
+            'due_date',
+            'status',
+            'payment_amount',
+        ]
+
+    def validate_payment_amount(self, value):
+        if value < 0:
+            raise serializers.ValidationError('Payment amount field must have value more then 0.')
+        return value
+
+    def validate(self, attrs):
+        if attrs['start_date'] > attrs['due_date']:
+            raise serializers.ValidationError(
+                {
+                    'start_date': 'Start date should be earlier than due date.',
+                    'due_date': 'Due date should be later than start date.'
+                }
+            )
+
+        return attrs
