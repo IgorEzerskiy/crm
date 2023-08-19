@@ -23,3 +23,7 @@ class UserListAPIView(ListAPIView):
 class ClientCreateAPIView(CreateAPIView):
     serializer_class = ClientModelSerializer
     queryset = Client.objects.all()
+
+    def perform_create(self, serializer):
+        serializer.validated_data['service_company'] = self.request.user.company
+        super().perform_create(serializer=serializer)
