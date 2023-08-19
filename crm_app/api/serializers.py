@@ -29,10 +29,28 @@ class UserReadSerializer(serializers.ModelSerializer):
         ]
 
 
-class ClientReadSerializer(serializers.ModelSerializer):
+class ClientModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = Client
-        fields = ['id', 'first_name', 'last_name']
+        fields = ['id', 'first_name', 'last_name', 'telephone', 'telegram', 'email']
+        read_only_fields = ['id']
+        extra_kwargs = {
+            'telephone': {'write_only': True},
+            'telegram': {'write_only': True},
+            'email': {'write_only': True}
+        }
+
+    def validate_first_name(self, value):
+        if not value.isalpha():
+            raise serializers.ValidationError('Only letter')
+
+        return value
+
+    def validate_lasst_name(self, value):
+        if not value.isalpha():
+            raise serializers.ValidationError('Only letter')
+
+        return value
 
 
 class StatusReadSerializer(serializers.ModelSerializer):
@@ -43,7 +61,7 @@ class StatusReadSerializer(serializers.ModelSerializer):
 
 class OrderReadSerializer(serializers.ModelSerializer):
     manager = UserReadSerializer(read_only=True)
-    client = ClientReadSerializer(read_only=True)
+    client = ClientModelSerializer(read_only=True)
     status = StatusReadSerializer(read_only=True)
     comments = CommentReadSerializer(read_only=True, many=True)
 
