@@ -71,6 +71,8 @@ class OrderListView(LoginRequiredMixin, ListView):
 
         return queryset
 
+# Api done
+
 
 class OrderCreateView(LoginRequiredMixin, CreateView):
     template_name = 'new_order.html'
