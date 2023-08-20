@@ -71,6 +71,8 @@ class OrderListView(LoginRequiredMixin, ListView):
 
         return queryset
 
+# Api Done
+
 
 class OrderCreateView(LoginRequiredMixin, CreateView):
     template_name = 'new_order.html'
@@ -116,6 +118,8 @@ class OrderCreateView(LoginRequiredMixin, CreateView):
         )
 
         return super().form_valid(form=form)
+
+# API Done
 
 
 class OrderUpdateView(LoginRequiredMixin, UpdateView):
