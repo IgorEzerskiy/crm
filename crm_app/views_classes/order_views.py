@@ -71,7 +71,7 @@ class OrderListView(LoginRequiredMixin, ListView):
 
         return queryset
 
-# Api done
+# Api Done
 
 
 class OrderCreateView(LoginRequiredMixin, CreateView):
@@ -118,6 +118,8 @@ class OrderCreateView(LoginRequiredMixin, CreateView):
         )
 
         return super().form_valid(form=form)
+
+# API Done
 
 
 class OrderUpdateView(LoginRequiredMixin, UpdateView):
