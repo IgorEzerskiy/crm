@@ -92,7 +92,6 @@ class OrderCreateSerializer(serializers.ModelSerializer):
             'manager',
             'start_date',
             'due_date',
-            'status',
             'payment_amount',
         ]
 
@@ -109,5 +108,11 @@ class OrderCreateSerializer(serializers.ModelSerializer):
                     'due_date': 'Due date should be later than start date.'
                 }
             )
+
+        if attrs['manager'].company != self.context['request'].user.company:
+            raise serializers.ValidationError({'manager': 'Manager not in your company.'})
+
+        if attrs['client'].service_company != self.context['request'].user.company:
+            raise serializers.ValidationError({'client': 'Client not in your company.'})
 
         return attrs
