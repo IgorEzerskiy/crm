@@ -1,18 +1,42 @@
-from rest_framework.generics import ListAPIView, CreateAPIView
+from rest_framework.generics import ListAPIView, CreateAPIView, UpdateAPIView
 
 from crm_app.api.serializers import OrderReadSerializer, UserReadSerializer, OrderCreateSerializer, \
     ClientModelSerializer
-from crm_app.models import Order, User, Client
+from crm_app.models import Order, User, Client, Status
 
 
 class OrderListAPIView(ListAPIView):
     serializer_class = OrderReadSerializer
     queryset = Order.objects.all()
 
+    def get_queryset(self):
+        queryset = super().get_queryset()
+
+        return queryset.filter(manager__company=self.request.user.company)
+
 
 class OrderCreateAPIView(CreateAPIView):
     serializer_class = OrderCreateSerializer
     queryset = Order.objects.all()
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+
+        return queryset.filter(manager__company=self.request.user.company)
+
+    def perform_create(self, serializer):
+        serializer.validated_data['status'] = Status.objects.first()
+        super().perform_create(serializer=serializer)
+
+
+class OrderUpdateAPIView(UpdateAPIView):
+    serializer_class = OrderCreateSerializer
+    queryset = Order.objects.all()
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+
+        return queryset.filter(manager__company=self.request.user.company)
 
 
 class UserListAPIView(ListAPIView):
