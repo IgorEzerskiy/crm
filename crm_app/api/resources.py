@@ -1,12 +1,12 @@
 from rest_framework.generics import ListAPIView, CreateAPIView, UpdateAPIView
 
-from crm_app.api.serializers import OrderReadSerializer, UserReadSerializer, OrderCreateSerializer, \
+from crm_app.api.serializers import UserReadSerializer, OrderCreateSerializer, \
     ClientModelSerializer
 from crm_app.models import Order, User, Client, Status
 
 
 class OrderListAPIView(ListAPIView):
-    serializer_class = OrderReadSerializer
+    serializer_class = OrderCreateSerializer
     queryset = Order.objects.all()
 
     def get_queryset(self):
@@ -35,7 +35,6 @@ class OrderUpdateAPIView(UpdateAPIView):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-
         return queryset.filter(manager__company=self.request.user.company)
 
 
