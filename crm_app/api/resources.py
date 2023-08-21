@@ -35,8 +35,11 @@ class OrderUpdateAPIView(UpdateAPIView):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-
         return queryset.filter(manager__company=self.request.user.company)
+
+    # def perform_update(self, serializer):
+    #     serializer.validated_data['status'] = Status.objects.get(id=self.request.data.get('status'))
+    #     super().perform_update(serializer=serializer)
 
 
 class UserListAPIView(ListAPIView):

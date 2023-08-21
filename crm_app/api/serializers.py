@@ -85,14 +85,17 @@ class OrderCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
         fields = [
+            'id',
             'title',
             'description',
             'client',
             'manager',
+            'status',
             'start_date',
             'due_date',
             'payment_amount',
         ]
+        read_only_fields = ['id']
 
     def validate_payment_amount(self, value):
         if value < 0:
