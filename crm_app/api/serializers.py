@@ -60,12 +60,7 @@ class StatusReadSerializer(serializers.ModelSerializer):
         fields = ['id', 'name']
 
 
-class OrderReadSerializer(serializers.ModelSerializer):
-    manager = UserReadSerializer(read_only=True)
-    client = ClientModelSerializer(read_only=True)
-    status = StatusReadSerializer(read_only=True)
-    comments = CommentReadSerializer(read_only=True, many=True)
-
+class OrderCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
         fields = [
@@ -74,26 +69,22 @@ class OrderReadSerializer(serializers.ModelSerializer):
             'description',
             'client',
             'manager',
-            'start_date',
-            'due_date',
             'status',
-            'payment_amount',
-            'comments'
-        ]
-
-
-class OrderCreateSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Order
-        fields = [
-            'title',
-            'description',
-            'client',
-            'manager',
             'start_date',
             'due_date',
             'payment_amount',
         ]
+        read_only_fields = ['id']
+
+    def get_fields(self):
+        fields = super().get_fields()
+        allowed_methods = ['GET']
+        if self.context['request'].stream.method in allowed_methods:
+            fields['status'] = StatusReadSerializer()
+            fields['manager'] = UserReadSerializer()
+            fields['client'] = ClientModelSerializer()
+            fields['comments'] = CommentReadSerializer(many=True)
+        return fields
 
     def validate_payment_amount(self, value):
         if value < 0:
