@@ -1,8 +1,10 @@
+from rest_framework.exceptions import ValidationError
 from rest_framework.generics import ListAPIView, CreateAPIView, UpdateAPIView, RetrieveAPIView
 
-from crm_app.api.serializers import UserReadSerializer, OrderModelSerializer, \
+from crm_app.api.serializers import UserModelSerializer, OrderModelSerializer, \
     ClientModelSerializer, CommentReadSerializer
 from crm_app.models import Order, User, Client, Status, Comment
+
 
 # Orders classes
 
@@ -49,12 +51,14 @@ class OrderUpdateAPIView(UpdateAPIView):
         queryset = super().get_queryset()
         return queryset.filter(manager__company=self.request.user.company)
 
+
 # Users classes
 
 
 class UserListAPIView(ListAPIView):
-    serializer_class = UserReadSerializer
+    serializer_class = UserModelSerializer
     queryset = User.objects.all()
+
 
 # Client classes
 
@@ -67,19 +71,39 @@ class ClientCreateAPIView(CreateAPIView):
         serializer.validated_data['service_company'] = self.request.user.company
         super().perform_create(serializer=serializer)
 
+
 # Comments classes
 
 
 class CommentCreateAPIView(CreateAPIView):
     serializer_class = CommentReadSerializer
-    queryset = Comment
-
-    def get_queryset(self):
-        queryset = super().get_queryset()
-        return queryset.filter(order__manager__company=self.request.user.company)
 
     def perform_create(self, serializer):
         serializer.validated_data['author'] = self.request.user
         super().perform_create(serializer=serializer)
 
+
 # Companies classes
+# TODO: write adminPassed permission
+class CompanyUpdateAPIView(UpdateAPIView):
+    pass
+
+
+# Profile classes
+class ProfileAPIView(RetrieveAPIView):
+    serializer_class = UserModelSerializer
+    queryset = User.objects.all()
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+
+        if not self.kwargs['pk'] == self.request.user.id:
+            raise ValidationError('Invalid profile pk')
+
+        return queryset.filter(company=self.request.user.company)
+
+
+class ProfileUpdateAPIView(UpdateAPIView):
+    serializer_class = UserModelSerializer
+    queryset = User.objects.all()
+
