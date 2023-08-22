@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from crm_app.models import Order, Company, User, Status, Client, Comment
+from crm_app.validators import email_validator, telegram_username_validator
 
 
 class CommentReadSerializer(serializers.ModelSerializer):
@@ -68,14 +69,14 @@ class ClientModelSerializer(serializers.ModelSerializer):
             'telegram': {'write_only': True},
             'email': {'write_only': True}
         }
-
+        
     def validate_first_name(self, value):
         if not value.isalpha():
             raise serializers.ValidationError('Only letter')
 
         return value
 
-    def validate_lasst_name(self, value):
+    def validate_last_name(self, value):
         if not value.isalpha():
             raise serializers.ValidationError('Only letter')
 
