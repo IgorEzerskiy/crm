@@ -5,13 +5,35 @@ from crm_app.models import Order, Company, User, Status, Client, Comment
 class CommentReadSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
-        fields = ['id', 'text', 'updated_at']
+        fields = [
+                  'id',
+                  'text',
+                  'created_at',
+                  'updated_at',
+                  'order',
+                  'author'
+                  ]
+        read_only_fields = [
+            'id',
+            'updated_at',
+            'created_at',
+            'author'
+        ]
+
+    def validate_order(self, value):
+        if value.manager.company != self.context['request'].user.company:
+            raise serializers.ValidationError('Invalid order ID. Order not in your company.')
+        return value
 
 
 class CompanyReadSerializer(serializers.ModelSerializer):
     class Meta:
         model = Company
-        fields = ['id', 'name', 'telephone']
+        fields = [
+            'id',
+            'name',
+            'telephone'
+        ]
 
 
 class UserReadSerializer(serializers.ModelSerializer):
@@ -32,7 +54,14 @@ class UserReadSerializer(serializers.ModelSerializer):
 class ClientModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = Client
-        fields = ['id', 'first_name', 'last_name', 'telephone', 'telegram', 'email']
+        fields = [
+            'id',
+            'first_name',
+            'last_name',
+            'telephone',
+            'telegram',
+            'email'
+        ]
         read_only_fields = ['id']
         extra_kwargs = {
             'telephone': {'write_only': True},
@@ -56,10 +85,13 @@ class ClientModelSerializer(serializers.ModelSerializer):
 class StatusReadSerializer(serializers.ModelSerializer):
     class Meta:
         model = Status
-        fields = ['id', 'name']
+        fields = [
+            'id',
+            'name'
+        ]
 
 
-class OrderCreateSerializer(serializers.ModelSerializer):
+class OrderModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
         fields = [
