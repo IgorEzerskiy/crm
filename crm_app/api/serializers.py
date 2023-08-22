@@ -1,19 +1,18 @@
 from rest_framework import serializers
 from crm_app.models import Order, Company, User, Status, Client, Comment
-from crm_app.validators import email_validator, telegram_username_validator
 
 
 class CommentReadSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
         fields = [
-                  'id',
-                  'text',
-                  'created_at',
-                  'updated_at',
-                  'order',
-                  'author'
-                  ]
+            'id',
+            'text',
+            'created_at',
+            'updated_at',
+            'order',
+            'author'
+        ]
         read_only_fields = [
             'id',
             'updated_at',
@@ -37,7 +36,7 @@ class CompanyReadSerializer(serializers.ModelSerializer):
         ]
 
 
-class UserReadSerializer(serializers.ModelSerializer):
+class UserModelSerializer(serializers.ModelSerializer):
     company = CompanyReadSerializer()
 
     class Meta:
@@ -48,8 +47,22 @@ class UserReadSerializer(serializers.ModelSerializer):
             'first_name',
             'last_name',
             'company',
-            'is_company_admin'
+            'is_company_admin',
+            'email'
         ]
+        read_only_fields = ['id', 'company', 'is_company_admin']
+
+    def validate_first_name(self, value):
+        if not value.isalpha():
+            raise serializers.ValidationError('Only letter')
+
+        return value
+
+    def validate_last_name(self, value):
+        if not value.isalpha():
+            raise serializers.ValidationError('Only letter')
+
+        return value
 
 
 class ClientModelSerializer(serializers.ModelSerializer):
@@ -69,7 +82,7 @@ class ClientModelSerializer(serializers.ModelSerializer):
             'telegram': {'write_only': True},
             'email': {'write_only': True}
         }
-        
+
     def validate_first_name(self, value):
         if not value.isalpha():
             raise serializers.ValidationError('Only letter')
@@ -113,7 +126,7 @@ class OrderModelSerializer(serializers.ModelSerializer):
         allowed_methods = ['GET']
         if self.context['request'].stream.method in allowed_methods:
             fields['status'] = StatusReadSerializer()
-            fields['manager'] = UserReadSerializer()
+            fields['manager'] = UserModelSerializer()
             fields['client'] = ClientModelSerializer()
             fields['comments'] = CommentReadSerializer(many=True)
         return fields

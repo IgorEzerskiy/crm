@@ -2,7 +2,7 @@ from rest_framework.authtoken.views import ObtainAuthToken
 from django.urls import path
 
 from crm_app.api.resources import OrderListAPIView, UserListAPIView, OrderCreateAPIView, ClientCreateAPIView, \
-    OrderUpdateAPIView, CommentCreateAPIView, OrderDetailAPIView
+    OrderUpdateAPIView, CommentCreateAPIView, OrderDetailAPIView, ProfileAPIView, ProfileUpdateAPIView
 
 urlpatterns = [
     path('login/', ObtainAuthToken.as_view()),
@@ -12,5 +12,8 @@ urlpatterns = [
     path('order-create/', OrderCreateAPIView.as_view()),
     path('client-create/', ClientCreateAPIView.as_view()),
     path('order-update/<int:pk>', OrderUpdateAPIView.as_view()),
-    path('comment-add/', CommentCreateAPIView.as_view())
+    path('comment-add/', CommentCreateAPIView.as_view()),
+    path('profile/<int:pk>', ProfileAPIView.as_view()),
+    path('profile-update/<int:pk>', ProfileUpdateAPIView.as_view()),
+
 ]
