@@ -49,6 +49,16 @@
                                 <h3> {{ form.email }}</h3>
                             </div>
                         </div>
+                        {% if request.user.is_company_admin %}
+                            <div class="row mt-2">
+                                <div class="form-check" style="margin-left: 12px"><label class="labels">Admin status</label>
+                                    <label class="form-check-label" for="flexCheckDefault">
+                                        {{ form.is_company_admin.errors }}
+                                    </label>
+                                    {{ form.is_company_admin }}
+                                </div>
+                            </div>
+                        {% endif %}
                         <div class="mt-5 text-center">
                             <button type="submit"
                                     class="btn btn-primary profile-button">Save
