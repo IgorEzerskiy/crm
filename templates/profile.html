@@ -36,9 +36,18 @@
                             <h3> {{ request.user.last_name }}</h3>
                         </div>
                     </div>
-                    <div class="row mt-3">
-                        <div class="col-md-12"><label class="labels">Company</label>
+                    <div class="row mt-2">
+                        <div class="col-md-6"><label class="labels">Company</label>
                             <h3> {{ request.user.company }}</h3>
+                        </div>
+                        <div class="col-md-6"><label class="labels">Status</label>
+                            <h3>
+                                {% if request.user.is_company_admin %}
+                                    Company administrator
+                                {% else %}
+                                    Manager
+                                {% endif %}
+                            </h3>
                         </div>
                     </div>
                     <div class="mt-5 text-center" style="display: flex; justify-content: space-between">
@@ -118,7 +127,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="mt-5 text-center" style="display: flex; justify-content: space-between">
+                    <div class="mt-5 text-center" style="display: flex; justify-content: space-between; padding-top: 25px">
                         {% if request.user.is_company_admin %}
                             <a type="button" href="{% url 'edit_company' request.user.company.id %}"
                                class="btn btn-primary profile-button">Edit company</a>

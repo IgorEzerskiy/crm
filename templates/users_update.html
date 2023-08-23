@@ -44,6 +44,12 @@
                                 {{ form.email.errors }}
                                 <h3> {{ form.email }}</h3>
                             </div>
+                            <div class="form-check" style="margin-left: 12px"><label class="labels">Admin status</label>
+                                <label class="form-check-label" for="flexCheckDefault">
+                                    {{ form.is_company_admin.errors }}
+                                </label>
+                                {{ form.is_company_admin }}
+                            </div>
                         </div>
                         <div class="mt-5 text-center">
                             <button type="submit"

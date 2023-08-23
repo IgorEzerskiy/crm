@@ -188,7 +188,7 @@ class UsersUpdateView(AdminPassedMixin, LoginRequiredMixin, UpdateView):
     template_name = 'users_update.html'
     queryset = User.objects.all()
     form_class = UserInfoUpdateForm
-    success_url = '/users/'
+    success_url = '/'
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -206,10 +206,20 @@ class UsersUpdateView(AdminPassedMixin, LoginRequiredMixin, UpdateView):
         current_img = None if current_user.image.name == '' else current_user.image
 
         if new_img == current_img:
+            messages.success(
+                self.request,
+                "The user information has been successfully updated."
+            )
+
             return super().form_valid(form=form)
         else:
             if current_img:
                 os.remove(current_img.path)
             obj.save()
+
+        messages.success(
+            self.request,
+            "The user information has been successfully updated."
+        )
 
         return super().form_valid(form=form)
