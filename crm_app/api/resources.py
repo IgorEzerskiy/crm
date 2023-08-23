@@ -1,5 +1,6 @@
 from rest_framework.exceptions import ValidationError
 from rest_framework.generics import ListAPIView, CreateAPIView, UpdateAPIView, RetrieveAPIView
+from crm_app.api.permissions import IsCompanyAdminOrPermissionDenied, IsAuthenticatedOrPermissionDeny
 
 from crm_app.api.serializers import UserModelSerializer, OrderModelSerializer, \
     ClientModelSerializer, CommentReadSerializer
