@@ -168,6 +168,7 @@ class UserInfoUpdateForm(ModelForm):
             'first_name',
             'last_name',
             'email',
+            'is_company_admin',
             'image'
         ]
 
@@ -188,6 +189,20 @@ class UserInfoUpdateForm(ModelForm):
         self.fields['last_name'].widget.attrs.update({'class': 'form-control'})
         self.fields['email'].widget.attrs.update({'class': 'form-control'})
         self.fields['image'].widget.attrs.update({'class': 'form-control'})
+        self.fields['is_company_admin'].widget.attrs.update({'class': 'form-check-input',
+                                                             'id': 'flexCheckDefault'
+                                                             })
+
+        if not self.request.user.is_company_admin:
+            self.fields.pop('is_company_admin')
+
+    def clean_is_company_admin(self):
+        is_company_admin_from_form = self.cleaned_data.get('is_company_admin')
+
+        if not self.request.user.is_company_admin:
+            raise forms.ValidationError('An ordinary manager cannot give anyone the status of a company administrator.')
+
+        return is_company_admin_from_form
 
     def clean_first_name(self):
         first_name = self.cleaned_data.get('first_name')
