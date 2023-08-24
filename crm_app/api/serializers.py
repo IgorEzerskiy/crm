@@ -26,18 +26,23 @@ class CommentReadSerializer(serializers.ModelSerializer):
         return value
 
 
-class CompanyReadSerializer(serializers.ModelSerializer):
+class CompanyModalSerializer(serializers.ModelSerializer):
     class Meta:
         model = Company
         fields = [
             'id',
             'name',
-            'telephone'
+            'telephone',
+            'email'
         ]
+        extra_kwargs = {
+            'email': {'write_only': True},
+        }
+        read_only_fields = ['id']
 
 
 class UserModelSerializer(serializers.ModelSerializer):
-    company = CompanyReadSerializer()
+    company = CompanyModalSerializer()
 
     class Meta:
         model = User
@@ -48,7 +53,8 @@ class UserModelSerializer(serializers.ModelSerializer):
             'last_name',
             'company',
             'is_company_admin',
-            'email'
+            'email',
+            'image'
         ]
         read_only_fields = ['id', 'company', 'is_company_admin']
 

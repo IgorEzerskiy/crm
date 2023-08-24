@@ -108,3 +108,11 @@ class ProfileUpdateAPIView(UpdateAPIView):
     serializer_class = UserModelSerializer
     queryset = User.objects.all()
 
+
+    # def perform_update(self, serializer):
+    #     new_image = serializer.validated_data.get('image')
+    #     if new_image:
+
+
+
+
