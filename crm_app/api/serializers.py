@@ -124,7 +124,7 @@ class OrderModelSerializer(serializers.ModelSerializer):
     def get_fields(self):
         fields = super().get_fields()
         allowed_methods = ['GET']
-        if self.context['request'].stream.method in allowed_methods:
+        if self.context['request'].method in allowed_methods:
             fields['status'] = StatusReadSerializer()
             fields['manager'] = UserModelSerializer()
             fields['client'] = ClientModelSerializer()
