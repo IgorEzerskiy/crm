@@ -1,3 +1,5 @@
+import os
+
 from rest_framework.exceptions import ValidationError
 from rest_framework.generics import ListAPIView, CreateAPIView, UpdateAPIView, RetrieveAPIView
 from crm_app.api.permissions import IsCompanyAdminOrPermissionDenied, IsAuthenticatedOrPermissionDeny
@@ -108,11 +110,13 @@ class ProfileUpdateAPIView(UpdateAPIView):
     serializer_class = UserModelSerializer
     queryset = User.objects.all()
 
+    def perform_update(self, serializer):
+        current_image = None if self.request.user.image.name == '' else self.request.user.image
+        new_image = serializer.validated_data.get('image')
 
-    # def perform_update(self, serializer):
-    #     new_image = serializer.validated_data.get('image')
-    #     if new_image:
-
-
-
-
+        if new_image is None:
+            super().perform_update(serializer=serializer)
+        else:
+            if current_image:
+                os.remove(current_image.path)
+        super().perform_update(serializer=serializer)
