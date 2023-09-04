@@ -5,8 +5,8 @@ from rest_framework.generics import ListAPIView, CreateAPIView, UpdateAPIView, R
 from crm_app.api.permissions import IsCompanyAdminOrPermissionDenied, IsAuthenticatedOrPermissionDeny
 
 from crm_app.api.serializers import UserModelSerializer, OrderModelSerializer, \
-    ClientModelSerializer, CommentReadSerializer
-from crm_app.models import Order, User, Client, Status, Comment
+    ClientModelSerializer, CommentReadSerializer, CompanyModelSerializer
+from crm_app.models import Order, User, Client, Status, Comment, Company
 
 
 # Orders classes
@@ -87,9 +87,9 @@ class CommentCreateAPIView(CreateAPIView):
 
 
 # Companies classes
-# TODO: write adminPassed permission
 class CompanyUpdateAPIView(UpdateAPIView):
-    pass
+    serializer_class = CompanyModelSerializer
+    queryset = Company.objects.all()
 
 
 # Profile classes

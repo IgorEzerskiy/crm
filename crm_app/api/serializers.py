@@ -1,3 +1,5 @@
+import re
+
 from rest_framework import serializers
 from crm_app.models import Order, Company, User, Status, Client, Comment
 
@@ -26,7 +28,7 @@ class CommentReadSerializer(serializers.ModelSerializer):
         return value
 
 
-class CompanyModalSerializer(serializers.ModelSerializer):
+class CompanyModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = Company
         fields = [
@@ -40,9 +42,20 @@ class CompanyModalSerializer(serializers.ModelSerializer):
         }
         read_only_fields = ['id']
 
+        def validate_name(self, value):
+            name = value.strip()
+            if name is not None and re.match(r'^\d+$', name):
+                raise serializers.ValidationError('It can`t be only digits')
+            elif re.search(r'\s{2,}', name):
+                raise serializers.ValidationError('Two or more spaces in a row. Please enter name correctly.')
+            elif name is None:
+                raise serializers.ValidationError('You have to name your company')
+
+            return name
+
 
 class UserModelSerializer(serializers.ModelSerializer):
-    company = CompanyModalSerializer()
+    company = CompanyModelSerializer()
 
     class Meta:
         model = User
