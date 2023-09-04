@@ -1,10 +1,12 @@
+import os
+
 from rest_framework.exceptions import ValidationError
 from rest_framework.generics import ListAPIView, CreateAPIView, UpdateAPIView, RetrieveAPIView
 from crm_app.api.permissions import IsCompanyAdminOrPermissionDenied, IsAuthenticatedOrPermissionDeny
 
 from crm_app.api.serializers import UserModelSerializer, OrderModelSerializer, \
-    ClientModelSerializer, CommentReadSerializer
-from crm_app.models import Order, User, Client, Status, Comment
+    ClientModelSerializer, CommentReadSerializer, CompanyModelSerializer
+from crm_app.models import Order, User, Client, Status, Comment, Company
 
 
 # Orders classes
@@ -85,9 +87,9 @@ class CommentCreateAPIView(CreateAPIView):
 
 
 # Companies classes
-# TODO: write adminPassed permission
 class CompanyUpdateAPIView(UpdateAPIView):
-    pass
+    serializer_class = CompanyModelSerializer
+    queryset = Company.objects.all()
 
 
 # Profile classes
@@ -108,3 +110,13 @@ class ProfileUpdateAPIView(UpdateAPIView):
     serializer_class = UserModelSerializer
     queryset = User.objects.all()
 
+    def perform_update(self, serializer):
+        current_image = None if self.request.user.image.name == '' else self.request.user.image
+        new_image = serializer.validated_data.get('image')
+
+        if new_image is None:
+            super().perform_update(serializer=serializer)
+        else:
+            if current_image:
+                os.remove(current_image.path)
+        super().perform_update(serializer=serializer)
