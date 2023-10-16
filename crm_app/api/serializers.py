@@ -1,7 +1,10 @@
 import re
 
 from rest_framework import serializers
+from rest_framework.fields import EmailField, CharField
+
 from crm_app.models import Order, Company, User, Status, Client, Comment
+from crm_app.validators import email_validator, telegram_username_validator
 
 
 class CommentReadSerializer(serializers.ModelSerializer):
@@ -85,6 +88,16 @@ class UserModelSerializer(serializers.ModelSerializer):
 
 
 class ClientModelSerializer(serializers.ModelSerializer):
+    email = EmailField(
+        validators=[email_validator],
+        required=False
+    )
+
+    telegram = CharField(
+        validators=[telegram_username_validator],
+        required=False
+    )
+
     class Meta:
         model = Client
         fields = [
@@ -93,14 +106,17 @@ class ClientModelSerializer(serializers.ModelSerializer):
             'last_name',
             'telephone',
             'telegram',
-            'email'
+            'email',
+            'service_company'
         ]
-        read_only_fields = ['id']
-        extra_kwargs = {
-            'telephone': {'write_only': True},
-            'telegram': {'write_only': True},
-            'email': {'write_only': True}
-        }
+        read_only_fields = ['id',
+                            'service_company'
+                            ]
+        # extra_kwargs = {
+        #     'telephone': {'write_only': True},
+        #     'telegram': {'write_only': True},
+        #     'email': {'write_only': True}
+        # }
 
     def validate_first_name(self, value):
         if not value.isalpha():
@@ -113,6 +129,11 @@ class ClientModelSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError('Only letter')
 
         return value
+
+
+class ClientDeleteSerializer(serializers.Serializer):
+    delete_forever = serializers.BooleanField(default=False)
+    first_name_and_last_name = serializers.CharField()
 
 
 class StatusReadSerializer(serializers.ModelSerializer):
