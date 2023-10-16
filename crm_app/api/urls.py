@@ -3,7 +3,7 @@ from django.urls import path
 
 from crm_app.api.resources import OrderListAPIView, UserListAPIView, OrderCreateAPIView, ClientCreateAPIView, \
     OrderUpdateAPIView, CommentCreateAPIView, OrderDetailAPIView, ProfileAPIView, ProfileUpdateAPIView, \
-    CompanyUpdateAPIView
+    CompanyUpdateAPIView, StatusReadAPIView, ClientListAPIView, ClientUpdateAPIView, ClientDestroyAPIView
 
 urlpatterns = [
     path('login/', ObtainAuthToken.as_view()),
@@ -17,5 +17,8 @@ urlpatterns = [
     path('profile/<int:pk>', ProfileAPIView.as_view()),
     path('profile-update/<int:pk>', ProfileUpdateAPIView.as_view()),
     path('company-update/<int:pk>', CompanyUpdateAPIView.as_view()),
-
+    path('statuses/', StatusReadAPIView.as_view()),
+    path('clients/', ClientListAPIView.as_view()),
+    path('client/<int:pk>', ClientUpdateAPIView.as_view()),
+    path('client-delete/<int:pk>', ClientDestroyAPIView.as_view())
 ]

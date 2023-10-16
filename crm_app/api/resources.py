@@ -1,11 +1,15 @@
 import os
 
+from rest_framework import status
 from rest_framework.exceptions import ValidationError
-from rest_framework.generics import ListAPIView, CreateAPIView, UpdateAPIView, RetrieveAPIView
+from rest_framework.generics import ListAPIView, CreateAPIView, UpdateAPIView, RetrieveAPIView, DestroyAPIView
+from rest_framework.response import Response
+
 from crm_app.api.permissions import IsCompanyAdminOrPermissionDenied, IsAuthenticatedOrPermissionDeny
 
 from crm_app.api.serializers import UserModelSerializer, OrderModelSerializer, \
-    ClientModelSerializer, CommentReadSerializer, CompanyModelSerializer
+    ClientModelSerializer, CommentReadSerializer, CompanyModelSerializer, StatusReadSerializer, \
+    ClientDeleteSerializer
 from crm_app.models import Order, User, Client, Status, Comment, Company
 
 
@@ -75,6 +79,49 @@ class ClientCreateAPIView(CreateAPIView):
         super().perform_create(serializer=serializer)
 
 
+class ClientListAPIView(ListAPIView):
+    serializer_class = ClientModelSerializer
+    queryset = Client.objects.all()
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        queryset = queryset.filter(service_company=self.request.user.company)
+
+        return queryset
+
+
+class ClientUpdateAPIView(UpdateAPIView):
+    serializer_class = ClientModelSerializer
+    queryset = Client.objects.all()
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        queryset = queryset.filter(service_company=self.request.user.company)
+
+        return queryset
+
+
+class ClientDestroyAPIView(DestroyAPIView):
+    serializer_class = ClientDeleteSerializer
+    queryset = Client.objects.all()
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        queryset = queryset.filter(service_company=self.request.user.company)
+
+        return queryset
+
+    # def destroy(self, request, *args, **kwargs):
+    #     instance = self.get_object()
+    #
+    #     serializer = self.get_serializer()
+    #
+    #     client_first_last_name = serializer.data['first_name_and_last_name'].split('-')
+    #
+    #
+    #     # self.perform_destroy(instance)
+    #     return Response(status=status.HTTP_204_NO_CONTENT)
+
 # Comments classes
 
 
@@ -120,3 +167,10 @@ class ProfileUpdateAPIView(UpdateAPIView):
             if current_image:
                 os.remove(current_image.path)
         super().perform_update(serializer=serializer)
+
+
+# Status classes
+
+class StatusReadAPIView(ListAPIView):
+    serializer_class = StatusReadSerializer
+    queryset = Status.objects.all()
