@@ -9,6 +9,8 @@ from django.contrib import messages
 
 from crm_app.views_classes.permissions import AdminPassedMixin
 
+# API Done
+
 
 class ClientListView(LoginRequiredMixin, ListView):
     template_name = 'clients.html'
@@ -39,6 +41,8 @@ class ClientListView(LoginRequiredMixin, ListView):
             order_num=Count('order')
         )
 
+# API Done
+
 
 class ClientCreateView(LoginRequiredMixin, CreateView):
     template_name = 'new_client.html'
@@ -62,6 +66,8 @@ class ClientCreateView(LoginRequiredMixin, CreateView):
         )
 
         return super().form_valid(form=form)
+
+# API Done
 
 
 class ClientUpdateView(LoginRequiredMixin, UpdateView):
