@@ -4,13 +4,15 @@ from rest_framework import status
 from rest_framework.exceptions import ValidationError
 from rest_framework.generics import ListAPIView, CreateAPIView, UpdateAPIView, RetrieveAPIView, DestroyAPIView
 from rest_framework.response import Response
+from django.db import transaction
 
 from crm_app.api.permissions import IsCompanyAdminOrPermissionDenied, IsAuthenticatedOrPermissionDeny
 
 from crm_app.api.serializers import UserModelSerializer, OrderModelSerializer, \
     ClientModelSerializer, CommentReadSerializer, CompanyModelSerializer, StatusReadSerializer, \
-    ClientDeleteSerializer
+    ClientSafeDeleteSerializer
 from crm_app.models import Order, User, Client, Status, Comment, Company
+from django.db.utils import IntegrityError
 
 
 # Orders classes
@@ -102,7 +104,6 @@ class ClientUpdateAPIView(UpdateAPIView):
 
 
 class ClientDestroyAPIView(DestroyAPIView):
-    serializer_class = ClientDeleteSerializer
     queryset = Client.objects.all()
 
     def get_queryset(self):
@@ -111,16 +112,40 @@ class ClientDestroyAPIView(DestroyAPIView):
 
         return queryset
 
-    # def destroy(self, request, *args, **kwargs):
-    #     instance = self.get_object()
-    #
-    #     serializer = self.get_serializer()
-    #
-    #     client_first_last_name = serializer.data['first_name_and_last_name'].split('-')
-    #
-    #
-    #     # self.perform_destroy(instance)
-    #     return Response(status=status.HTTP_204_NO_CONTENT)
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        try:
+            self.perform_destroy(instance)
+        except IntegrityError:
+            return Response({"error": "You can't delete this user because he have orders. "
+                                      "Try to use safe delete endpoint."},
+                            status=status.HTTP_400_BAD_REQUEST
+                            )
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class ClientSafeDeleteAPIView(UpdateAPIView):
+    serializer_class = ClientSafeDeleteSerializer
+    queryset = Client.objects.all()
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        queryset = queryset.filter(service_company=self.request.user.company)
+
+        return queryset
+
+    def perform_update(self, serializer):
+        orders = Order.objects.filter(
+            client__id=self.kwargs['pk'],
+            manager__company=self.request.user.company
+        )
+
+        with transaction.atomic():
+            for order in orders:
+                order.is_active_order = False
+                order.save()
+            super().perform_update(serializer=serializer)
 
 # Comments classes
 

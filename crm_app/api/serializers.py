@@ -131,9 +131,10 @@ class ClientModelSerializer(serializers.ModelSerializer):
         return value
 
 
-class ClientDeleteSerializer(serializers.Serializer):
-    delete_forever = serializers.BooleanField(default=False)
-    first_name_and_last_name = serializers.CharField()
+class ClientSafeDeleteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Client
+        fields = ['is_active_client']
 
 
 class StatusReadSerializer(serializers.ModelSerializer):

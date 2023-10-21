@@ -95,6 +95,7 @@ class ClientUpdateView(LoginRequiredMixin, UpdateView):
         )
 
         return super().form_valid(form=form)
+# API Done
 
 
 class ClientDeleteView(AdminPassedMixin, LoginRequiredMixin, DeleteView):

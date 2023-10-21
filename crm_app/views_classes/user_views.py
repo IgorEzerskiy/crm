@@ -7,6 +7,8 @@ from django.contrib import messages
 import os
 from crm_app.views_classes.permissions import AdminPassedMixin
 
+# API Done
+
 
 class UserListView(AdminPassedMixin, LoginRequiredMixin, ListView):
     template_name = 'users.html'
