@@ -134,11 +134,15 @@ class UserConnectionDeleteView(AdminPassedMixin, LoginRequiredMixin, DeleteView)
 
         return super().form_valid(form=form)
 
+# API Done
+
 
 class UserDetailView(LoginRequiredMixin, DetailView):
     queryset = User.objects.all()
     template_name = 'profile.html'
     extra_context = {'form': PasswordChangeForm}
+
+# API Done
 
 
 class ProfileInfoUpdateView(LoginRequiredMixin, UpdateView):

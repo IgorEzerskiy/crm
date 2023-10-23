@@ -131,10 +131,16 @@ class ClientModelSerializer(serializers.ModelSerializer):
         return value
 
 
-class ClientSafeDeleteSerializer(serializers.ModelSerializer):
+class ClientSafeDeleteAndRecoveryUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Client
         fields = ['is_active_client']
+
+    def validate_is_active_client(self, value):
+        if self.instance.is_active_client == value:
+            raise serializers.ValidationError(f'User status is already {value}')
+
+        return value
 
 
 class StatusReadSerializer(serializers.ModelSerializer):

@@ -10,7 +10,7 @@ from crm_app.api.permissions import IsCompanyAdminOrPermissionDenied, IsAuthenti
 
 from crm_app.api.serializers import UserModelSerializer, OrderModelSerializer, \
     ClientModelSerializer, CommentReadSerializer, CompanyModelSerializer, StatusReadSerializer, \
-    ClientSafeDeleteSerializer
+    ClientSafeDeleteAndRecoveryUpdateSerializer
 from crm_app.models import Order, User, Client, Status, Comment, Company
 from django.db.utils import IntegrityError
 
@@ -67,6 +67,12 @@ class OrderUpdateAPIView(UpdateAPIView):
 class UserListAPIView(ListAPIView):
     serializer_class = UserModelSerializer
     queryset = User.objects.all()
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        queryset = queryset.filter(company=self.request.user.company)
+
+        return queryset
 
 
 # Client classes
@@ -126,7 +132,7 @@ class ClientDestroyAPIView(DestroyAPIView):
 
 
 class ClientSafeDeleteAPIView(UpdateAPIView):
-    serializer_class = ClientSafeDeleteSerializer
+    serializer_class = ClientSafeDeleteAndRecoveryUpdateSerializer
     queryset = Client.objects.all()
 
     def get_queryset(self):
@@ -147,6 +153,29 @@ class ClientSafeDeleteAPIView(UpdateAPIView):
                 order.save()
             super().perform_update(serializer=serializer)
 
+
+class ClientRecoveryUpdateAPIView(UpdateAPIView):
+    serializer_class = ClientSafeDeleteAndRecoveryUpdateSerializer
+    queryset = Client.objects.all()
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        queryset = queryset.filter(service_company=self.request.user.company)
+
+        return queryset
+
+    def perform_update(self, serializer):
+        orders = Order.objects.filter(
+            client__id=self.kwargs['pk'],
+            manager__company=self.request.user.company
+        )
+
+        with transaction.atomic():
+            for order in orders:
+                order.is_active_order = True
+                order.save()
+            super().perform_update(serializer=serializer)
+
 # Comments classes
 
 
@@ -162,6 +191,12 @@ class CommentCreateAPIView(CreateAPIView):
 class CompanyUpdateAPIView(UpdateAPIView):
     serializer_class = CompanyModelSerializer
     queryset = Company.objects.all()
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        queryset = queryset.filter(name=self.request.user.company.name)
+
+        return queryset
 
 
 # Profile classes
@@ -181,6 +216,12 @@ class ProfileAPIView(RetrieveAPIView):
 class ProfileUpdateAPIView(UpdateAPIView):
     serializer_class = UserModelSerializer
     queryset = User.objects.all()
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        queryset = queryset.filter(company=self.request.user.company)
+
+        return queryset
 
     def perform_update(self, serializer):
         current_image = None if self.request.user.image.name == '' else self.request.user.image

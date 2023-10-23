@@ -143,6 +143,8 @@ class ClientDeleteView(AdminPassedMixin, LoginRequiredMixin, DeleteView):
 
         return HttpResponseRedirect(self.get_success_url())
 
+# API Done
+
 
 class ClientRecoveryUpdateView(AdminPassedMixin, LoginRequiredMixin, UpdateView):
     model = Client
