@@ -8,6 +8,8 @@ from crm_app.forms_classes.user_forms import UserLoginForm, UserCreateForm
 from crm_app.models import Company
 from django.contrib import messages
 
+# API Done
+
 
 class UserLoginView(LoginView):
     template_name = 'login.html'

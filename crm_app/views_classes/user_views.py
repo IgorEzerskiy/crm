@@ -7,6 +7,8 @@ from django.contrib import messages
 import os
 from crm_app.views_classes.permissions import AdminPassedMixin
 
+# API Done
+
 
 class UserListView(AdminPassedMixin, LoginRequiredMixin, ListView):
     template_name = 'users.html'
@@ -132,11 +134,15 @@ class UserConnectionDeleteView(AdminPassedMixin, LoginRequiredMixin, DeleteView)
 
         return super().form_valid(form=form)
 
+# API Done
+
 
 class UserDetailView(LoginRequiredMixin, DetailView):
     queryset = User.objects.all()
     template_name = 'profile.html'
     extra_context = {'form': PasswordChangeForm}
+
+# API Done
 
 
 class ProfileInfoUpdateView(LoginRequiredMixin, UpdateView):
