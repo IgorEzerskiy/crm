@@ -10,7 +10,7 @@ from crm_app.api.permissions import IsCompanyAdminOrPermissionDenied, IsAuthenti
 
 from crm_app.api.serializers import UserModelSerializer, OrderModelSerializer, \
     ClientModelSerializer, CommentReadSerializer, CompanyModelSerializer, StatusReadSerializer, \
-    ClientDeleteSerializer, RegisterSerializer, ClientSafeDeleteAndRecoveryUpdateSerializer
+    RegisterSerializer, ClientSafeDeleteAndRecoveryUpdateSerializer
 
 from crm_app.models import Order, User, Client, Status, Comment, Company
 from django.db.utils import IntegrityError
