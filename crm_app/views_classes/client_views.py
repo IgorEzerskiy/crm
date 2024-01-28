@@ -95,6 +95,7 @@ class ClientUpdateView(LoginRequiredMixin, UpdateView):
         )
 
         return super().form_valid(form=form)
+# API Done
 
 
 class ClientDeleteView(AdminPassedMixin, LoginRequiredMixin, DeleteView):
@@ -141,6 +142,8 @@ class ClientDeleteView(AdminPassedMixin, LoginRequiredMixin, DeleteView):
             )
 
         return HttpResponseRedirect(self.get_success_url())
+
+# API Done
 
 
 class ClientRecoveryUpdateView(AdminPassedMixin, LoginRequiredMixin, UpdateView):
