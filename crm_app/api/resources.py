@@ -10,7 +10,8 @@ from crm_app.api.permissions import IsCompanyAdminOrPermissionDenied, IsAuthenti
 
 from crm_app.api.serializers import UserModelSerializer, OrderModelSerializer, \
     ClientModelSerializer, CommentReadSerializer, CompanyModelSerializer, StatusReadSerializer, \
-    ClientSafeDeleteAndRecoveryUpdateSerializer
+    ClientDeleteSerializer, RegisterSerializer, ClientSafeDeleteAndRecoveryUpdateSerializer
+
 from crm_app.models import Order, User, Client, Status, Comment, Company
 from django.db.utils import IntegrityError
 
@@ -240,3 +241,9 @@ class ProfileUpdateAPIView(UpdateAPIView):
 class StatusReadAPIView(ListAPIView):
     serializer_class = StatusReadSerializer
     queryset = Status.objects.all()
+
+
+class UserCreateAPIView(CreateAPIView):
+    serializer_class = RegisterSerializer
+    queryset = User.objects.all()
+
