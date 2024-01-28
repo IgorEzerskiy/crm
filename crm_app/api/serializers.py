@@ -57,6 +57,12 @@ class CompanyModelSerializer(serializers.ModelSerializer):
             return name
 
 
+class RegisterSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('username', 'first_name', 'last_name', 'password')
+
+
 class UserModelSerializer(serializers.ModelSerializer):
     company = CompanyModelSerializer()
 
