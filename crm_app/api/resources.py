@@ -247,3 +247,16 @@ class UserCreateAPIView(CreateAPIView):
     serializer_class = RegisterSerializer
     queryset = User.objects.all()
 
+
+class UserConnectionRequestsListAPIView(ListAPIView):
+    serializer_class = UserModelSerializer
+    queryset = User.objects.all()
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+
+        return queryset.filter(
+            company=self.request.user.company,
+            is_active=False
+        )
+

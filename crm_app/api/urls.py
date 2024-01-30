@@ -4,7 +4,7 @@ from django.urls import path
 from crm_app.api.resources import OrderListAPIView, UserListAPIView, OrderCreateAPIView, ClientCreateAPIView, \
     OrderUpdateAPIView, CommentCreateAPIView, OrderDetailAPIView, ProfileAPIView, ProfileUpdateAPIView, \
     CompanyUpdateAPIView, StatusReadAPIView, ClientListAPIView, ClientUpdateAPIView, ClientDestroyAPIView, \
-    ClientSafeDeleteAPIView, ClientRecoveryUpdateAPIView
+    ClientSafeDeleteAPIView, ClientRecoveryUpdateAPIView, UserConnectionRequestsListAPIView
 
 urlpatterns = [
     path('login/', ObtainAuthToken.as_view()),
@@ -23,5 +23,6 @@ urlpatterns = [
     path('client/<int:pk>', ClientUpdateAPIView.as_view()),
     path('client-delete/<int:pk>', ClientDestroyAPIView.as_view()),
     path('client-safe-delete/<int:pk>', ClientSafeDeleteAPIView.as_view()),
-    path('client-recovery/<int:pk>', ClientRecoveryUpdateAPIView.as_view())
+    path('client-recovery/<int:pk>', ClientRecoveryUpdateAPIView.as_view()),
+    path('user-connection-requests/', UserConnectionRequestsListAPIView.as_view()),
 ]
